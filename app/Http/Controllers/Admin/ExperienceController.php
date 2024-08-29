@@ -5,16 +5,17 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Experience;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ExperienceController extends Controller
 {
-     /**
+    /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $experiences = Experience::all();
-        return view('Admin.experience.experience_list',compact('experiences'));
+        $experiences = Experience::latest()->paginate(10);
+        return view('Admin.experience.index', compact('experiences'));
     }
 
     /**
@@ -22,7 +23,7 @@ class ExperienceController extends Controller
      */
     public function create()
     {
-        return view('Admin.experience.add_experience');
+        return view('Admin.experience.create');
     }
 
     /**
@@ -31,21 +32,31 @@ class ExperienceController extends Controller
     public function store(Request $request)
     {
 
-            $this->validate($request,[
-            'title'=>'required|min:2|string',
-            'sector'=>'required|string',
-            'description'=>'required|max:500|min:10|string',
-            'time'=>'required',
-            
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'title' => 'required|min:2|string',
+                'sector' => 'required|string',
+                'description' => 'required|max:500|min:10|string',
+                'time' => 'required|integer',
+
             ],
-            $message=[
+            $message = [
                 'title.required' => 'Please enter experience.',
                 'sector.required' => 'Please enter your institute.',
                 'time.required' => 'Please enter experience time.',
             ]
-            );
+        );
 
-            if($request->isMethod('post')){
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => '400',
+                'errors' => $validator->messages()
+            ]);
+        } else {
+
+
+            if ($request->isMethod('post')) {
                 $experience  = new Experience;
                 $experience->title = $request->title;
                 $experience->sector = $request->sector;
@@ -54,9 +65,12 @@ class ExperienceController extends Controller
                 $experience->save();
             }
 
-        session()->flash('msg','Experience added successfully.');
-        session()->flash('cls','success');
-        return redirect()->route('experiences.index');
+            return response()->json([
+                'status' => '200',
+                'msg' => 'Experience added successfully.',
+                'cls' => 'success',
+            ]);
+        }
     }
 
     /**
@@ -73,44 +87,55 @@ class ExperienceController extends Controller
     public function edit(string $id)
     {
         $experience = Experience::find($id);
-        return view('Admin.experience.edit_experience',compact('experience'));
+        return view('Admin.experience.edit', compact('experience'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,string $id)
+    public function update(Request $request, string $id)
     {
-        $request->validate([
-            'title'=>'required|min:2|string',
-            'sector'=>'required|string',
-            'description'=>'required|max:500|min:10|string',
-            'time'=>'required|integer',
-        ],
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'title' => 'required|min:2|string',
+                'sector' => 'required|string',
+                'description' => 'required|max:500|min:10|string',
+                'time' => 'required|integer',
+            ],
 
-        $message=[
-            'title.required' => 'Please enter experience.',
-            'sector.required' => 'Please enter your institute.',
-            'time.required' => 'Please enter time of your experience .',
-        ]
-    
-    );
+            $message = [
+                'title.required' => 'Please enter experience.',
+                'sector.required' => 'Please enter your institute.',
+                'time.required' => 'Please enter time of your experience .',
+            ]
+        );
 
 
-        if($request->isMethod('PUT')){
-            $experience  = Experience::find($id);
-            $experience->title = $request->title;
-            $experience->sector = $request->sector;
-            $experience->description = $request->description;
-            $experience->time = $request->time;
-            $experience->update();
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => '400',
+                'errors' => $validator->messages()
+            ]);
+        } else {
+
+
+            if ($request->isMethod('PUT')) {
+                $experience  = Experience::find($id);
+                $experience->title = $request->title;
+                $experience->sector = $request->sector;
+                $experience->description = $request->description;
+                $experience->time = $request->time;
+                $experience->update();
+            }
+
+            return response()->json([
+                'status' => '200',
+                'msg' => 'Experience updated successfully.',
+                'cls' => 'success',
+            ]);
         }
-
-        session()->flash('msg','Experience updated successfully.');
-        session()->flash('cls','warning');
-        return redirect()->route('experiences.index');
-    
-}
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -119,8 +144,11 @@ class ExperienceController extends Controller
     {
         $experience = Experience::find($id);
         $experience->delete();
-        session()->flash('msg','Experience deleted successfully.');
-        session()->flash('cls','danger');
-        return redirect()->back();
+        
+        return response()->json([
+            'status' => '200',
+            'msg' => 'Experience deleted successfully.',
+            'cls' => 'success'
+        ]);
     }
 }

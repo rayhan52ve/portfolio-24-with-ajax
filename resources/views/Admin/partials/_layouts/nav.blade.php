@@ -132,13 +132,13 @@
                     </li>
                 </ul>
             </li> --}}
-            <li>
+            {{-- <li>
                 <a href="{{ route('support') }}" class="{{ url()->current() == route('support') ? 'active' : '' }}">
                     <i data-acorn-icon="support" class="icon" data-acorn-size="18"></i>
                     <span class="label">Support</span>
                 </a>
 
-            </li>
+            </li> --}}
             <li>
                 <a href="{{ route('logout') }}" class="">
                     <i data-acorn-icon="logout" class="icon" data-acorn-size="18"></i>

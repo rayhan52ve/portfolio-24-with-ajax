@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Skill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Session;
 
 class SkilController extends Controller
@@ -14,8 +15,8 @@ class SkilController extends Controller
      */
     public function index()
     {
-        $skills = Skill::all();
-        return view('Admin.skill.show',compact('skills'));
+        $skills = Skill::latest()->paginate(10);
+        return view('Admin.skill.index', compact('skills'));
     }
 
     /**
@@ -23,7 +24,7 @@ class SkilController extends Controller
      */
     public function create()
     {
-        return view("Admin.skill.add_skill");
+        return view("Admin.skill.create");
     }
 
     /**
@@ -31,27 +32,39 @@ class SkilController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'program' => 'required',
-            'percentage' => 'required|integer',
-        ],
-        $message=[
-            'program.required' => 'Please Enter Your Program.',
-            'percentage.required' => 'Please Enter Percentage.',
-        ]
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'program' => 'required',
+                'percentage' => 'required|integer|between:1,100',
+            ],
+            $message = [
+                'program.required' => 'Please Enter Your Program.',
+                'percentage.required' => 'Please Enter Percentage.',
+            ]
         );
 
-        if($request->isMethod('post')){
-            $data = $request->all();
-            $skill = new Skill;
-            $skill ->program = $data['program'];
-            $skill ->percentage = $data['percentage'];
-            $skill ->save();
-        }
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'errors' => $validator->messages()
+            ]);
+        } else {
 
-        session()->flash('msg','Skills Info Added Successfully');
-        session()->flash('cls','success');
-        return redirect()->back();
+            if ($request->isMethod('post')) {
+                $data = $request->all();
+                $skill = new Skill;
+                $skill->program = $data['program'];
+                $skill->percentage = $data['percentage'];
+                $skill->save();
+            }
+
+            return response()->json([
+                'status' => 200,
+                'msg' => 'Skills Info Added Successfully.',
+                'icon' => 'success'
+            ]);
+        }
     }
 
     /**
@@ -59,8 +72,7 @@ class SkilController extends Controller
      */
     public function show(string $id)
     {
-        $skill = Skill::find($id);
-        return  view("Admin.skill.show",$skill);
+       //
     }
 
     /**
@@ -69,7 +81,7 @@ class SkilController extends Controller
     public function edit(string $id)
     {
         $skill = Skill::find($id);
-        return  view("Admin.skill.edit_skill",compact('skill'));
+        return  view("Admin.skill.edit", compact('skill'));
     }
 
     /**
@@ -77,26 +89,39 @@ class SkilController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $this->validate($request,[
-            'program' => 'required',
-            'percentage' => 'required|integer',
-        ],
-        $message=[
-            'program.required' => 'Please Enter Your Program.',
-            'percentage.required' => 'Please Enter Your Percentage.',
-        ]
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'program' => 'required',
+                'percentage' => 'required|integer|between:1,100',
+            ],
+            $message = [
+                'program.required' => 'Please Enter Your Program.',
+                'percentage.required' => 'Please Enter Percentage.',
+            ]
         );
 
-        if($request->isMethod('PUT')){
-            $skill = Skill::find($id);
-            $skill ->program =$request->program;
-            $skill ->percentage =$request->percentage;
-            $skill ->update();
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => '400',
+                'errors' => $validator->messages()
+            ]);
+        } else {
+
+            if ($request->isMethod('PUT')) {
+                $skill = Skill::find($id);
+                $skill->program = $request->program;
+                $skill->percentage = $request->percentage;
+                $skill->update();
+            }
+
+            return response()->json([
+                'status' => '200',
+                'msg' => 'Skills Info updated Successfully.',
+                'icon' => 'success'
+            ]);
         }
 
-        session()->flash('msg','Skills Info updated Successfully');
-        session()->flash('cls','warning');
-        return redirect()->route('skils.index');
     }
 
     /**
@@ -107,8 +132,10 @@ class SkilController extends Controller
         $skill = Skill::find($id);
         $skill->delete();
 
-        session()->flash('msg','Skills Info Deleted Successfully');
-        session()->flash('cls','danger');
-        return redirect()->back();
+        return response()->json([
+            'status' => '200',
+            'msg' => 'Skills Info Deleted Successfully.',
+            'icon' => 'success'
+        ]);
     }
 }

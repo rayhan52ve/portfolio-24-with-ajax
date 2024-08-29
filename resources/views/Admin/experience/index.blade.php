@@ -10,16 +10,16 @@
                             <!-- Displaying the range of entries -->
                             <div class="">
                                 @php
-                                    $start = $educations->firstItem();
-                                    $end = $educations->lastItem();
-                                    $total = $educations->total();
+                                    $start = $experiences->firstItem();
+                                    $end = $experiences->lastItem();
+                                    $total = $experiences->total();
                                 @endphp
-                                <h3>Education Info</h3>
+                                <h3>Experiences</h3>
                                 <span class="text-info">Showing {{ $start }} to {{ $end }} of
                                     {{ $total }} entries</span>
                             </div>
                             <div>
-                                <a title="Create" href="{{ route('educations.create') }}" id="bootModalShow"
+                                <a title="Create" href="{{ route('experiences.create') }}" id="bootModalShow"
                                     class="btn btn-success">Add
                                     New</a>
                             </div>
@@ -31,9 +31,9 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">SL</th>
-                                        <th scope="col">Degree</th>
+                                        <th scope="col">Experience Type</th>
                                         <th scope="col">Institute</th>
-                                        <th scope="col">Year</th>
+                                        <th scope="col">Years of Experience</th>
                                         <th scope="col">Description</th>
                                         <th scope="col" class="w-25 p-3">Action</th>
 
@@ -41,37 +41,34 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        $sl = $educations->firstItem();
+                                        $sl = 1;
                                     @endphp
-                                    @foreach ($educations as $edu)
+                                    @foreach ($experiences as $exp)
                                         <tr>
                                             <th scope="row">{{ $sl++ }}</th>
-                                            <td>{{ $edu->title }}</td>
-                                            <td>{{ $edu->sector }}</td>
-                                            <td>{{ $edu->time }}</td>
-                                            <td>{{ $edu->description }}</td>
+                                            <td>{{ $exp->title }}</td>
+                                            <td>{{ $exp->sector }}</td>
+                                            <td>{{ $exp->time }}</td>
+                                            <td>{{ $exp->description }}</td>
                                             <td>
-                                                <a title="Edit" id="bootModalShow"
-                                                    href="{{ route('educations.edit', $edu) }}"
+                                                <a id="bootModalShow" href="{{ route('experiences.edit', $exp) }}"
                                                     class="btn btn-warning btn-sm"><i
                                                         class="fa-regular fa-pen-to-square"></i></a>
-                                                <form id="{{ 'deleteForm_' . $edu->id }}" title="Delete"
-                                                    action="{{ route('educations.destroy', $edu) }}" method="post">
+                                                <form id="{{ 'deleteForm_' . $exp->id }}" title="Delete"
+                                                    action="{{ route('experiences.destroy', $exp) }}" method="post">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button data-id="{{ $edu->id }}"
-                                                        class="delete btn btn-danger btn-sm" type="button"><i
-                                                            class="fa-solid fa-trash"></i></button>
+                                                    <button data-id="{{ $exp->id }}" class="delete btn btn-danger
+                                                        btn-sm" type="button"><i class="fa-solid fa-trash"></i></button>
                                                 </form>
                                             </td>
 
                                         </tr>
                                     @endforeach
-
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-center">
-                                <p> {{ $educations->links() }}</p>
+                                <p> {{ $experiences->links() }}</p>
                             </div>
                         </div>
                     </div>
@@ -83,33 +80,33 @@
     @push('js')
         <script>
             $(document).ready(function() {
+                // Show Modal on Click
                 let dialog = '';
-
-                // Show modal on button click
+                
                 $(document).off('click', '#bootModalShow').on('click', '#bootModalShow', function(e) {
                     e.preventDefault();
 
                     let modalContentUrl = $(this).attr('href');
                     let modalTitle = $(this).attr('title');
 
-                    // AJAX call to load modal content
+                    // Ajax call to load modal content
                     $.ajax({
                         type: "GET",
                         url: modalContentUrl,
                         success: function(response) {
                             dialog = bootbox.dialog({
-                                title: `<h4>${modalTitle} Education Info</h4>`,
+                                title: `<h4>${modalTitle} Experience Info</h4>`,
                                 message: "<div class='modalContent'></div>",
                                 size: 'medium',
                             });
 
-                            // Inject the response into the modal content
+                            // Inject response into Modal Content
                             $('.modalContent').html(response);
                         }
                     });
                 });
 
-                // Store or Update data on form submission
+                // Store or Update On form Submission
                 $(document).off('submit', '#storeAndUpdateForm').on('submit', '#storeAndUpdateForm', function(e) {
                     e.preventDefault();
 
@@ -120,11 +117,11 @@
                         type: "POST",
                         url: formUrl,
                         data: formData,
-                        processData: false,
-                        contentType: false,
+                        processData: false, // Required for FormData
+                        contentType: false, // Required for FormData
                         success: function(response) {
                             if (response.status == 400) {
-                                // Handle validation errors
+                                // handle validation Error
                                 $('.errors').html('').removeClass('d-none');
                                 $('.titleError').text(response.errors.title);
                                 $('.sectorError').text(response.errors.sector);
@@ -151,12 +148,12 @@
                     });
                 });
 
-                // Delete AJAX request
-                $(document).on('click', '.delete', function(e) {
+                // Delete Ajax Request
+                $(document).off('click', '.delete').on('click', '.delete', function(e) {
                     let id = $(this).attr('data-id');
                     let formId = `deleteForm_${id}`;
                     let formAction = $(`#${formId}`).attr('action');
-                    let scrollTop = $(window).scrollTop(); // Save scroll position
+
 
                     Swal.fire({
                         title: "Are you sure?",
@@ -169,28 +166,23 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $.ajax({
-                                type: "POST", // POST since Laravel uses _method for DELETE
+                                type: "POST",
                                 url: formAction,
                                 data: {
                                     _method: 'DELETE',
-                                    _token: $('meta[name="csrf-token"]').attr(
-                                        'content') // Include CSRF token
+                                    _token: $('meta[name="csrf-token"]').attr('content')
                                 },
                                 success: function(response) {
-                                    if (response.status === '200') {
+                                    if (response.status == '200') {
                                         $('#table-content').load(location.href +
-                                            ' #table-content',
-                                            function() {
-                                                $(window).scrollTop(
-                                                scrollTop); // Restore scroll position
-                                            });
+                                            ' #table-content');
 
                                         // Show success message
                                         Swal.fire({
                                             position: 'top-end',
                                             icon: response.cls,
-                                            toast: true,
                                             title: response.msg,
+                                            toast: true,
                                             showConfirmButton: false,
                                             timerProgressBar: true,
                                             timer: 5000,
@@ -202,7 +194,7 @@
                         }
                     });
                 });
-                
+
             });
         </script>
     @endpush

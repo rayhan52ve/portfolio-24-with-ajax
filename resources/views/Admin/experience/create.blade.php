@@ -1,8 +1,8 @@
-<form id="storeAndUpdateForm" action="{{ route('educations.store') }}" method="post">
+<form id="storeAndUpdateForm" action="{{ route('experiences.store') }}" method="post">
     @csrf
     <div class="form-group">
-        <label for="title">Degree</label>
-        <input type="text" name="title" class="form-control" id="" placeholder="Enter Degree"
+        <label for="title">Experience Type</label>
+        <input type="text" name="title" class="form-control" id="" placeholder="Enter experience"
             value="{{ old('title') }}">
         <div class="titleError errors d-none text-danger"></div>
     </div>
@@ -17,11 +17,10 @@
         <textarea type="text" name="description" class="form-control" id="" placeholder="Description"
             value="{{ old('description') }}" rows="3"></textarea>
         <div class="descriptionError errors d-none text-danger"></div>
-
     </div>
     <div class="form-group">
-        <label for="time">Year</label>
-        <input type="text" name="time" class="form-control" id="" placeholder="Education year"
+        <label for="time">Years of Experience</label>
+        <input type="text" name="time" class="form-control" id="" placeholder="Experience in Years"
             value="{{ old('time') }}">
         <div class="timeError errors d-none text-danger"></div>
     </div>

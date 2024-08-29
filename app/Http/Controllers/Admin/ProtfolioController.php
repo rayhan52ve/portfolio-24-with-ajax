@@ -6,9 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Protfolio;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 
 class ProtfolioController extends Controller
 {
@@ -17,8 +16,8 @@ class ProtfolioController extends Controller
      */
     public function index()
     {
-        $portfolios = Protfolio::orderBy('order_by','ASC')->get();
-        return view('Admin.portfolio.show_portfolio', compact('portfolios'));
+        $portfolios = Protfolio::orderBy('order_by', 'ASC')->paginate(10);
+        return view('Admin.portfolio.index', compact('portfolios'));
     }
 
     /**
@@ -26,7 +25,7 @@ class ProtfolioController extends Controller
      */
     public function create()
     {
-        return view("Admin.portfolio.add_portfolio");
+        return view("Admin.portfolio.create");
     }
 
     /**
@@ -35,39 +34,60 @@ class ProtfolioController extends Controller
     public function store(Request $request)
     {
 
-        $this->validate(
-            $request,
+        $validator = Validator::make(
+            $request->all(),
             [
                 'title' => 'required|min:2|string',
+                'client' => 'required',
+                'technology' => 'required',
                 'preview' => 'required',
+                'order_by' => 'required|integer',
+                'image' => 'required',
+            ],
+            $message = [
+                'title.required' => 'Please enter project name.',
+                'technology.required' => 'Please enter Technology.Ex:- Laravel,Ajax',
+                'preview.required' => 'Please enter project link as preview.',
+                'order_by.required' => 'Please enter project list order or serial number.',
+                'order_by.integer' => 'Please enter project list order or serial number.Ex:-1',
             ]
         );
-        // dd($request->all());
 
-        if ($request->isMethod('post')) {
-            if ($request->hasFile('image')) {
-                $image_tmp = $request->file('image');
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => '400',
+                'errors' => $validator->messages()
+            ]);
+        } else {
+
+
+            if ($request->isMethod('post')) {
+                if ($request->hasFile('image')) {
+                    $image_tmp = $request->file('image');
 
                     $extension = $image_tmp->getClientOriginalExtension();
                     $fileName = time() . '-' . rand(111, 99999) . '.' . $extension;
                     $image_path = 'uploads/portfolio' . '/' . $fileName;
 
                     Image::make($image_tmp)->resize(1000, 700)->save($image_path);
+                }
+
+                $portfolio = new Protfolio;
+                $portfolio->title = $request->title;
+                $portfolio->client = $request->client;
+                $portfolio->technology = $request->technology;
+                $portfolio->preview = $request->preview;
+                $portfolio->order_by = $request->order_by;
+                $portfolio->image = $image_path;
+                $portfolio->save();
             }
 
-            $portfolio = new Protfolio;
-            $portfolio->title = $request->title;
-            $portfolio->client = $request->client;
-            $portfolio->technology = $request->technology;
-            $portfolio->preview = $request->preview;
-            $portfolio->order_by = $request->order_by;
-            $portfolio->image = $image_path;
-            $portfolio->save();
+            return response()->json([
+                'status' => '200',
+                'msg' => 'Project Info Added Successfully.',
+                'cls' => 'success',
+            ]);
         }
-
-        session()->flash('msg', 'Portfolio Info Added Successfully');
-        session()->flash('cls', 'success');
-        return redirect()->route('portfolios.index');
     }
 
     /**
@@ -84,7 +104,7 @@ class ProtfolioController extends Controller
     public function edit(string $id)
     {
         $portfolio = Protfolio::find($id);
-        return view("Admin.portfolio.edit_portfolio", compact('portfolio'));
+        return view("Admin.portfolio.edit", compact('portfolio'));
     }
 
     /**
@@ -92,36 +112,65 @@ class ProtfolioController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'title' => 'required|min:2|string',
+                'client' => 'required',
+                'technology' => 'required',
+                'preview' => 'required',
+                'order_by' => 'required|integer',
+                'image' => 'nullable',
+            ],
+            $message = [
+                'title.required' => 'Please enter project name.',
+                'technology.required' => 'Please enter Technology.Ex:- Laravel,Ajax',
+                'preview.required' => 'Please enter project link as preview.',
+                'order_by.required' => 'Please enter project list order or serial number.',
+                'order_by.required' => 'Please enter project list order or serial number.Ex:-1',
+            ]
+        );
 
-        if ($request->isMethod('PUT')) {
-            $portfolio  = Protfolio::find($id);
-            if ($request->hasFile('image')) {
-                $image_tmp = $request->file('image');
-                
-                if (File::exists($portfolio->image)) {
-                    File::delete($portfolio->image);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => '400',
+                'errors' => $validator->messages()
+            ]);
+        } else {
+
+
+            if ($request->isMethod('PUT')) {
+                $portfolio  = Protfolio::find($id);
+                if ($request->hasFile('image')) {
+                    $image_tmp = $request->file('image');
+
+                    if (File::exists($portfolio->image)) {
+                        File::delete($portfolio->image);
+                    }
+
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    $fileName = time() . '-' . rand(111, 99999) . '.' . $extension;
+                    $image_path = 'uploads/portfolio' . '/' . $fileName;
+
+                    Image::make($image_tmp)->resize(1000, 700)->save($image_path);
+                    $portfolio->image = $image_path;
                 }
 
-                $extension = $image_tmp->getClientOriginalExtension();
-                $fileName = time() . '-' . rand(111, 99999) . '.' . $extension;
-                $image_path = 'uploads/portfolio' . '/' . $fileName;
 
-                Image::make($image_tmp)->resize(1000, 700)->save($image_path);
-                $portfolio->image = $image_path;
+                $portfolio->title = $request->title;
+                $portfolio->client = $request->client;
+                $portfolio->technology = $request->technology;
+                $portfolio->preview = $request->preview;
+                $portfolio->order_by = $request->order_by;
+                $portfolio->update();
             }
 
-
-            $portfolio->title = $request->title;
-            $portfolio->client = $request->client;
-            $portfolio->technology = $request->technology;
-            $portfolio->preview = $request->preview;
-            $portfolio->order_by = $request->order_by;
-            $portfolio->update();
+            return response()->json([
+                'status' => '200',
+                'msg' => 'Project Info Updated Successfully.',
+                'cls' => 'success',
+            ]);
         }
-
-        session()->flash('msg', 'Portfolio Info Updated Successfully');
-        session()->flash('cls', 'warning');
-        return redirect()->route('portfolios.index');
     }
 
     /**
@@ -137,8 +186,10 @@ class ProtfolioController extends Controller
 
         $portfolio->delete();
 
-        session()->flash('msg', 'Portfolio Info Deleted Successfully');
-        session()->flash('cls', 'danger');
-        return redirect()->back();
+        return response()->json([
+            'status' => '200',
+            'msg' => 'Project Deleted Successfully.',
+            'cls' => 'success'
+        ]);
     }
 }
