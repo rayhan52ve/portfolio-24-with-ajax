@@ -16,7 +16,7 @@ class ProtfolioController extends Controller
      */
     public function index()
     {
-        $portfolios = Protfolio::orderBy('order_by', 'ASC')->paginate(10);
+        $portfolios = Protfolio::orderBy('order_by', 'ASC')->get();
         return view('Admin.portfolio.index', compact('portfolios'));
     }
 

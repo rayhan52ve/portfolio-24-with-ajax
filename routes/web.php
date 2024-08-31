@@ -27,7 +27,6 @@ Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->group(function 
 
     Route::group(['middleware' => ['auth']], function () {
         Route::get('profile', 'AdminController@profile')->name('profile');
-        Route::get('profile-edit/{id}/edit', 'AdminController@profile_edit')->name('profile_edit');
         Route::put('profile-update/{id}', 'AdminController@profile_update')->name('profile_update');
 
         Route::get('/profile/change-password', 'AdminController@changePassword')->name('changePassword');

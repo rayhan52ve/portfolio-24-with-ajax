@@ -36,4 +36,8 @@
     integrity="sha512-oVbWSv2O4y1UzvExJMHaHcaib4wsBMS5tEP3/YkMP6GmkwRJAa79Jwsv+Y/w7w2Vb/98/Xhvck10LyJweB8Jsw=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+{{-- Data Table --}}
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>    
+
 @stack('js')

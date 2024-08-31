@@ -1,7 +1,6 @@
 @extends('Admin.partials.master')
 
 @section('content')
-
     <!-- Stats Start -->
     <div class="row">
         <div class="col-12">
@@ -78,9 +77,11 @@
                                     class="sw-6 sh-6 rounded-xl d-flex justify-content-center align-items-center border border-primary mb-4">
                                     <i data-acorn-icon="message" class="text-primary"></i>
                                 </div>
-                                <div class="mb-1 d-flex align-items-center text-alternate text-small lh-1-25">COMPUTER | MOBILE
+                                <div class="mb-1 d-flex align-items-center text-alternate text-small lh-1-25">COMPUTER |
+                                    MOBILE
                                 </div>
-                                <div class="text-primary cta-4">{{ $visitors->where('device','Computer')->count() }} - {{ $visitors->where('device','Mobile')->count() }}</div>
+                                <div class="text-primary cta-4">{{ $visitors->where('device', 'Computer')->count() }} -
+                                    {{ $visitors->where('device', 'Mobile')->count() }}</div>
                             </div>
                         </div>
                     </div>
@@ -95,9 +96,10 @@
                 <div class="card" style="overflow:auto">
                     <div class="card-header">
                         <div class="d-flex justify-content-between">
-                        <h3>Visitors Info</h3>
-                        <a href="{{route('emptyVisitors')}}" class="btn btn-danger" onclick="return confirm('Are you sure?All visitors data willbe Deleted.')">Empty Table</a>
-                    </div>
+                            <h3>Visitors Info</h3>
+                            <a href="{{ route('emptyVisitors') }}" class="btn btn-danger"
+                                onclick="return confirm('Are you sure?All visitors data willbe Deleted.')">Empty Table</a>
+                        </div>
                     </div>
                     <div class="card-body">
                         @if (session('msg'))
@@ -159,22 +161,20 @@
             </div>
         </div>
     </div>
-
-    <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>    
-    <script>
-        $(document).ready(function() {
-            $('#DataTbl').DataTable({
-                "paging": true,
-                "pageLength": 10,
-                "lengthMenu": [10, 25, 50, 100],
-                "ordering": true,
-                "searching": true,
-                "info": true,
-                "autoWidth": true,
-                "responsive": true
+    @push('js')
+        <script>
+            $(document).ready(function() {
+                $('#DataTbl').DataTable({
+                    "paging": true,
+                    "pageLength": 10,
+                    "lengthMenu": [10, 25, 50, 100],
+                    "ordering": true,
+                    "searching": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": true
+                });
             });
-        });
-    </script>
+        </script>
+    @endpush
 @endsection

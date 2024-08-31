@@ -80,6 +80,32 @@
         </div>
     </div>
 
+    <div id="spinner-overlay" style="display: none;">
+        <div class="loadingio-spinner">
+            <!-- Load the external SVG from assets -->
+            <img src="{{ asset('loading/Interwind@1x-1.0s-200px-200px.svg') }}" alt="Loading Spinner" width="200"
+                height="200">
+        </div>
+    </div>
+
+    @push('css')
+        <style>
+            #spinner-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.497);
+                /* Darker semi-transparent background */
+                z-index: 9999;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        </style>
+    @endpush
+
     @push('js')
         <script>
             $(document).ready(function() {
@@ -89,6 +115,7 @@
                 $(document).off('click', '#bootModalShow').on('click', '#bootModalShow', function(e) {
                     e.preventDefault();
 
+
                     let modalContentUrl = $(this).attr('href');
                     let modalTitle = $(this).attr('title');
 
@@ -96,6 +123,9 @@
                     $.ajax({
                         type: "GET",
                         url: modalContentUrl,
+                        beforeSend: function() {
+                            showSpinner(); // Show the spinner before the request starts
+                        },
                         success: function(response) {
                             dialog = bootbox.dialog({
                                 title: `<h4>${modalTitle} Education Info</h4>`,
@@ -105,6 +135,9 @@
 
                             // Inject the response into the modal content
                             $('.modalContent').html(response);
+                        },
+                        complete: function() {
+                            hideSpinner(); // Hide the spinner when the request completes
                         }
                     });
                 });
@@ -122,6 +155,9 @@
                         data: formData,
                         processData: false,
                         contentType: false,
+                        beforeSend: function() {
+                            showSpinner(); // Show the spinner before the request starts
+                        },
                         success: function(response) {
                             if (response.status == 400) {
                                 // Handle validation errors
@@ -147,6 +183,9 @@
                                     showCloseButton: true
                                 });
                             }
+                        },
+                        complete: function() {
+                            hideSpinner(); // Hide the spinner when the request completes
                         }
                     });
                 });
@@ -168,6 +207,8 @@
                         confirmButtonText: "Yes, delete it!"
                     }).then((result) => {
                         if (result.isConfirmed) {
+
+
                             $.ajax({
                                 type: "POST", // POST since Laravel uses _method for DELETE
                                 url: formAction,
@@ -176,13 +217,18 @@
                                     _token: $('meta[name="csrf-token"]').attr(
                                         'content') // Include CSRF token
                                 },
+                                beforeSend: function() {
+                                    showSpinner
+                                        (); // Show the spinner before the request starts
+                                },
                                 success: function(response) {
                                     if (response.status === '200') {
                                         $('#table-content').load(location.href +
                                             ' #table-content',
                                             function() {
                                                 $(window).scrollTop(
-                                                scrollTop); // Restore scroll position
+                                                    scrollTop
+                                                ); // Restore scroll position
                                             });
 
                                         // Show success message
@@ -197,12 +243,23 @@
                                             showCloseButton: true
                                         });
                                     }
+                                },
+                                complete: function() {
+                                    hideSpinner();
                                 }
                             });
                         }
                     });
                 });
-                
+
+                function showSpinner() {
+                    $('#spinner-overlay').show();
+                }
+
+                function hideSpinner() {
+                    $('#spinner-overlay').hide();
+                }
+
             });
         </script>
     @endpush

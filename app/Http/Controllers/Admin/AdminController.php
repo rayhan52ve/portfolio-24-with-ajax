@@ -25,10 +25,12 @@ class AdminController extends Controller
         $visitors = Visitor::latest()->get();
         return view('Admin.dashboard', compact('visitors'));
     }
+    
     public function support()
     {
         return view("Admin.support.support");
     }
+
     public function ForgetPassword()
     {
         return view("auth.forget");
@@ -91,11 +93,6 @@ class AdminController extends Controller
         return view('Admin.profile.profile', compact('user'));
     }
 
-    public function profile_edit()
-    {
-        $user = User::first();
-        return view('Admin.profile.edit_profile', compact('user'));
-    }
     public function profile_update(Request $request, string $id)
     {
         if ($request->isMethod('PUT')) {
@@ -112,6 +109,8 @@ class AdminController extends Controller
                 $image_path = 'uploads/profile' . '/' . $image_name;
 
                 Image::make($image_tmp)->resize(1000, 1000)->save($image_path);
+
+                $user->image = $image_path;
             } elseif (Auth::user()->image) {
                 $image_path = Auth::user()->image;
             }
@@ -130,6 +129,7 @@ class AdminController extends Controller
                 $filePath = 'uploads/CV/';
                 // $filePath = public_path() . '/uploads/profile/';
                 $filePath = $file->move($filePath, $filename);
+                $user->cv = $filePath;
             }
 
 
@@ -146,8 +146,6 @@ class AdminController extends Controller
             $user->experience = $request->experience;
             $user->linkedin = $request->linkedin;
             $user->complete_project = $request->complete_project;
-            $user->image = $image_path;
-            $user->cv = $filePath;
             $user->update();
         }
         return redirect()->route('profile');

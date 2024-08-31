@@ -15,8 +15,6 @@
     <meta name="description" content=""/>
     
     @include('Admin.partials._layouts.head')
-    @yield('css')
-    @stack('css')
   
 </head>
 
@@ -42,9 +40,7 @@
 @include('Admin.partials._layouts.modal_settings')
 @include('Admin.partials._layouts.modal_search')
 @include('Admin.partials._layouts.script')
-@yield('js_vendor')
-@yield('js_page')
-@stack('js')
+
 </body>
 
 </html>

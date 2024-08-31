@@ -26,6 +26,7 @@
         <!-- Image Input -->
         <label for="image">Image</label>
         <input type="file" class="form-control" name="image" id="image">
+        <img src="" class="preview_image img-thumbnail" width="150" alt="">
 
     </div>
 

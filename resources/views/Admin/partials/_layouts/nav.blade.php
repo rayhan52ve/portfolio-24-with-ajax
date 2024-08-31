@@ -41,7 +41,7 @@
             <div class="dropdown-menu dropdown-menu-end wide notification-dropdown scroll-out" id="notifications">
                 <div class="scroll">
                     <ul class="list-unstyled border-last-none">
-                        <li class="mb-3 pb-3 border-bottom border-separator-light d-flex">
+                        {{-- <li class="mb-3 pb-3 border-bottom border-separator-light d-flex">
                             <img src="{{ asset('backend/Buyer/img/profile/profile-1.webp') }}"
                                 class="me-3 sw-4 sh-4 rounded-xl align-self-center" alt="..." />
                             <div class="align-self-center">
@@ -62,7 +62,7 @@
                             <div class="align-self-center">
                                 <a href="#">3 items just added to wish list by a user!</a>
                             </div>
-                        </li>
+                        </li> --}}
 
                     </ul>
                 </div>

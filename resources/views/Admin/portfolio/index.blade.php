@@ -4,37 +4,21 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-12">
-                <div id="table-content" class="card">
+                <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between">
                             <!-- Displaying the range of entries -->
-                            <div class="">
-                                @php
-                                    $start = $portfolios->firstItem();
-                                    $end = $portfolios->lastItem();
-                                    $total = $portfolios->total();
-                                @endphp
-                                <h3>Project List</h3>
-                                <span class="text-info">Showing {{ $start }} to {{ $end }} of
-                                    {{ $total }} entries</span>
-                            </div>
-                            <div>
-                                <a title="Create" href="{{ route('portfolios.create') }}" id="bootModalShow"
-                                    class="btn btn-success btn-loading">Add
-                                    New</a>
-                            </div>
+                            <h3>Project List</h3>
+
+
+                            <a title="Create" href="{{ route('portfolios.create') }}" id="bootModalShow"
+                                class="btn btn-success btn-loading">Add
+                                Project</a>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            @if (session('msg'))
-                                <div class="alert alert-{{ session('cls') }} alert-dismissible fade show" role="alert">
-                                    {{ session('msg') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                                </div>
-                            @endif
-                            <table class="table table-striped text-center" style="font-size: 13px">
+                        <div id="table-content" class="table-responsive">
+                            <table id="DataTbl" class="table table-striped text-center" style="font-size: 13px">
                                 <thead>
                                     <tr>
                                         <th scope="col">SL</th>
@@ -60,8 +44,11 @@
                                             <td><a href=" {{ $portfolio->preview }}"> {{ $portfolio->preview }}</a></td>
                                             <td>{{ $portfolio->order_by }}</td>
                                             <td>
-                                                <img src="{{ asset($portfolio->image) }}" width="75px"
-                                                    class="img-thumbnail align-scenter">
+                                                <a id="bootModalViewImage" title="{{ $portfolio->title }} Image View"
+                                                    href="{{ asset($portfolio->image) }}">
+                                                    <img src="{{ asset($portfolio->image) }}" width="75px"
+                                                        class="img-thumbnail">
+                                                </a>
                                             </td>
                                             <td>
                                                 <a id="bootModalShow" title="Edit"
@@ -88,18 +75,36 @@
                                 </tbody>
 
                             </table>
-
-                            <div class="d-flex justify-content-center">
-                                <p> {{ $portfolios->links() }}</p>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div id="spinner-overlay" style="display: none;">
+        <div class="loadingio-spinner">
+            <!-- Load the external SVG from assets -->
+            <img src="{{ asset('loading/Interwind@1x-1.0s-200px-200px.svg') }}" alt="Loading Spinner" width="200"
+                height="200">
+        </div>
+    </div>
+
     @push('css')
         <style>
+            #spinner-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.497);
+                /* Darker semi-transparent background */
+                z-index: 9999;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
             /* Default placeholder color */
             input::placeholder {
                 color: #6c757d;
@@ -116,14 +121,61 @@
     @push('js')
         <script>
             $(document).ready(function() {
-                // Show Modal on Click
+
+                // Datatable
+                initializeDataTable();
+
+                function initializeDataTable() {
+                    $('#DataTbl').DataTable({
+                        "paging": true,
+                        "pageLength": 10,
+                        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                        "ordering": true,
+                        "searching": true,
+                        "info": true,
+                        "autoWidth": true,
+                        "responsive": true
+                    });
+                }
+
+
+                // Show Modals on Click
                 let dialog = '';
 
-                $(document).off('click', '#bootModalShow').on('click', '#bootModalShow', function(e) {
+                // Image Show modal
+                $(document).off('click', '#bootModalViewImage').on('click', '#bootModalViewImage', function(e) {
                     e.preventDefault();
 
-                    // Show loading indicator
-                    showLoadingAlert();
+                    let imageUrl = $(this).attr('href');
+                    let modalTitle = $(this).attr('title');
+
+                    // Open the modal with the image content
+                    dialog = bootbox.dialog({
+                        title: `<h4>${modalTitle}</h4>`,
+                        message: `<img src="${imageUrl}" class="img-fluid" alt="${modalTitle}">`,
+                        size: 'large',
+                    });
+                });
+
+                // Form Image preview
+                $(document).on('change','#image', function (e) {
+                    e.preventDefault();
+
+                    const file = this.files[0];
+
+                    if(file){
+                        let reader = new FileReader();
+                        reader.onload = function(e){
+                            $('.preview_image').attr('src',e.target.result);
+                        }
+
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+                // Create And Edit Modal
+                $(document).off('click', '#bootModalShow').on('click', '#bootModalShow', function(e) {
+                    e.preventDefault();
 
                     let modalContentUrl = $(this).attr('href');
                     let modalTitle = $(this).attr('title');
@@ -132,6 +184,9 @@
                     $.ajax({
                         type: "GET",
                         url: modalContentUrl,
+                        beforeSend: function() {
+                            showSpinner();
+                        },
                         success: function(response) {
                             dialog = bootbox.dialog({
                                 title: `<h4>${modalTitle} Experience Info</h4>`,
@@ -143,8 +198,7 @@
                             $('.modalContent').html(response);
                         },
                         complete: function() {
-                            // Close SweetAlert after the AJAX call completes
-                            Swal.close();
+                            hideSpinner();
                         }
                     });
                 });
@@ -156,19 +210,18 @@
                     let formData = new FormData(this);
                     let formUrl = $(this).attr('action');
 
-                    // Show loading indicator
-                    showLoadingAlert();
-
                     $.ajax({
                         type: "POST",
                         url: formUrl,
                         data: formData,
                         processData: false, // Required for FormData
                         contentType: false, // Required for FormData
+                        beforeSend: function() {
+                            showSpinner();
+                        },
                         success: function(response) {
                             if (response.status == 400) {
                                 // handle validation Error
-                                // Reset all placeholders and error styling before updating with new errors
                                 resetPlaceholders();
 
                                 // Handle validation errors by updating placeholders with error messages
@@ -198,8 +251,15 @@
 
                             } else if (response.status == 200) {
                                 $('.errors').html('').addClass('d-none');
-                                $('#table-content').load(location.href + ' #table-content');
                                 dialog.modal('hide');
+                                // Reload table content
+                                $('#table-content').load(location.href + ' #table-content',
+                                    function() {
+                                        // Reinitialize DataTable after content is loaded
+                                        $('#DataTbl').DataTable()
+                                            .destroy(); // Destroy previous instance
+                                        initializeDataTable(); // Reinitialize DataTable
+                                    });
 
                                 // Display SweetAlert for success
                                 Swal.fire({
@@ -216,24 +276,10 @@
                             }
                         },
                         complete: function() {
-                            // Close SweetAlert after the AJAX call completes
-                            Swal.close();
+                            hideSpinner();
                         }
                     });
                 });
-
-                // Function to show SweetAlert loading indicator
-                function showLoadingAlert() {
-                    Swal.fire({
-                        title: '<strong style="font-size: 24px; color: #4caf50;">Processing...</strong>',
-                        html: '<div style="font-size: 18px; color: #555;">Please wait while your request is being processed.</div>',
-                        background: '#f1f1f1', // Change the background color
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading(); // Show loading spinner
-                        }
-                    });
-                }
 
                 // Function to reset placeholders and error styles
                 function resetPlaceholders() {
@@ -265,7 +311,7 @@
                         if (result.isConfirmed) {
 
                             // Show loading indicator
-                            showLoadingAlert();
+                            showSpinner();
 
                             $.ajax({
                                 type: "POST",
@@ -274,10 +320,19 @@
                                     _method: 'DELETE',
                                     _token: $('meta[name="csrf-token"]').attr('content')
                                 },
+                                beforeSend: function() {
+                                    showSpinner();
+                                },
                                 success: function(response) {
                                     if (response.status == '200') {
+                                        // Reload table content
                                         $('#table-content').load(location.href +
-                                            ' #table-content');
+                                            ' #table-content',
+                                            function() {
+                                                // Reinitialize DataTable after content is loaded
+                                                $('#DataTbl').DataTable().destroy();
+                                                initializeDataTable();
+                                            });
 
                                         // Show success message
                                         Swal.fire({
@@ -291,11 +346,23 @@
                                             showCloseButton: true
                                         });
                                     }
+                                },
+                                complete: function() {
+                                    hideSpinner();
                                 }
                             });
                         }
                     });
                 });
+
+                // Loading Function
+                function showSpinner() {
+                    $('#spinner-overlay').show();
+                }
+
+                function hideSpinner() {
+                    $('#spinner-overlay').hide();
+                }
 
             });
         </script>

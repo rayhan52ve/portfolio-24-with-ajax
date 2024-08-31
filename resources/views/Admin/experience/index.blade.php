@@ -58,8 +58,10 @@
                                                     action="{{ route('experiences.destroy', $exp) }}" method="post">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button data-id="{{ $exp->id }}" class="delete btn btn-danger
-                                                        btn-sm" type="button"><i class="fa-solid fa-trash"></i></button>
+                                                    <button data-id="{{ $exp->id }}"
+                                                        class="delete btn btn-danger
+                                                        btn-sm"
+                                                        type="button"><i class="fa-solid fa-trash"></i></button>
                                                 </form>
                                             </td>
 
@@ -77,12 +79,38 @@
         </div>
     </div>
 
+    <div id="spinner-overlay" style="display: none;">
+        <div class="loadingio-spinner">
+            <!-- Load the external SVG from assets -->
+            <img src="{{ asset('loading/Interwind@1x-1.0s-200px-200px.svg') }}" alt="Loading Spinner" width="200"
+                height="200">
+        </div>
+    </div>
+
+    @push('css')
+        <style>
+            #spinner-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.497);
+                /* Darker semi-transparent background */
+                z-index: 9999;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        </style>
+    @endpush
+
     @push('js')
         <script>
             $(document).ready(function() {
                 // Show Modal on Click
                 let dialog = '';
-                
+
                 $(document).off('click', '#bootModalShow').on('click', '#bootModalShow', function(e) {
                     e.preventDefault();
 
@@ -93,6 +121,9 @@
                     $.ajax({
                         type: "GET",
                         url: modalContentUrl,
+                        beforeSend: function() {
+                            showSpinner(); // Show the spinner before the request starts
+                        },
                         success: function(response) {
                             dialog = bootbox.dialog({
                                 title: `<h4>${modalTitle} Experience Info</h4>`,
@@ -102,6 +133,9 @@
 
                             // Inject response into Modal Content
                             $('.modalContent').html(response);
+                        },
+                        complete: function() {
+                            hideSpinner(); // Hide the spinner when the request completes
                         }
                     });
                 });
@@ -119,6 +153,9 @@
                         data: formData,
                         processData: false, // Required for FormData
                         contentType: false, // Required for FormData
+                        beforeSend: function() {
+                            showSpinner(); // Show the spinner before the request starts
+                        },
                         success: function(response) {
                             if (response.status == 400) {
                                 // handle validation Error
@@ -144,6 +181,9 @@
                                     showCloseButton: true
                                 });
                             }
+                        },
+                        complete: function() {
+                            hideSpinner(); // Hide the spinner when the request completes
                         }
                     });
                 });
@@ -172,6 +212,10 @@
                                     _method: 'DELETE',
                                     _token: $('meta[name="csrf-token"]').attr('content')
                                 },
+                                beforeSend: function() {
+                                    showSpinner
+                                        (); // Show the spinner before the request starts
+                                },
                                 success: function(response) {
                                     if (response.status == '200') {
                                         $('#table-content').load(location.href +
@@ -189,11 +233,22 @@
                                             showCloseButton: true
                                         });
                                     }
+                                },
+                                complete: function() {
+                                    hideSpinner();
                                 }
                             });
                         }
                     });
                 });
+
+                function showSpinner() {
+                    $('#spinner-overlay').show();
+                }
+
+                function hideSpinner() {
+                    $('#spinner-overlay').hide();
+                }
 
             });
         </script>
