@@ -25,7 +25,7 @@ class AdminController extends Controller
         $visitors = Visitor::latest()->get();
         return view('Admin.dashboard', compact('visitors'));
     }
-    
+
     public function support()
     {
         return view("Admin.support.support");
@@ -89,7 +89,7 @@ class AdminController extends Controller
 
     public function profile()
     {
-        $user = User::get()->first();
+        $user = User::where('id', auth()->user()->id)->first();
         return view('Admin.profile.profile', compact('user'));
     }
 
@@ -108,7 +108,11 @@ class AdminController extends Controller
                 // $fileName = $image_name . '-' . rand(111, 99999) . '.' . $extension;
                 $image_path = 'uploads/profile' . '/' . $image_name;
 
-                Image::make($image_tmp)->resize(1000, 1000)->save($image_path);
+                if ($request->image_crop) {
+                    Image::make($image_tmp)->crop(720, 720)->save($image_path);
+                } else {
+                    Image::make($image_tmp)->save($image_path);
+                }
 
                 $user->image = $image_path;
             } elseif (Auth::user()->image) {
@@ -146,9 +150,14 @@ class AdminController extends Controller
             $user->experience = $request->experience;
             $user->linkedin = $request->linkedin;
             $user->complete_project = $request->complete_project;
-            $user->update();
+            $user->save();
+
+            return response()->json([
+                'status' => '200',
+                'msg' => 'Profile updated Successfully.',
+                'cls' => 'success',
+            ]);
         }
-        return redirect()->route('profile');
     }
 
     public function changePassword()
@@ -198,7 +207,22 @@ class AdminController extends Controller
 
     public function emptyVisitors()
     {
-        Visitor::truncate();
-        return redirect()->back()->with('success', 'Visitor table emptied successfully.');
+        $visitorsCount = Visitor::count();
+
+        if ($visitorsCount >= 1) {
+            Visitor::truncate(); // Empty the table
+
+            return response()->json([
+                'status' => '200',
+                'msg' => 'All Visitors Info Cleared.',
+                'cls' => 'success',
+            ]);
+        } else {
+            return response()->json([
+                'status' => '400',
+                'msg' => 'No data found.',
+                'cls' => 'error',
+            ]);
+        }
     }
 }

@@ -1,6 +1,6 @@
 <div class="nav-content d-flex">
     <!-- User Menu Start -->
-    <div class="user-container d-flex">
+    <div id="myProfileImage" class="user-container d-flex">
         <a href="#" class="d-flex user ">
             @if (auth()->user()->image)
                 <img class="profile" alt="profile" src="{{ asset(auth()->user()->image) }}" />

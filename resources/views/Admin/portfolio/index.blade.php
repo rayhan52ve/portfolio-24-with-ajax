@@ -129,7 +129,10 @@
                     $('#DataTbl').DataTable({
                         "paging": true,
                         "pageLength": 10,
-                        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                        "lengthMenu": [
+                            [10, 25, 50, 100, -1],
+                            [10, 25, 50, 100, "All"]
+                        ],
                         "ordering": true,
                         "searching": true,
                         "info": true,
@@ -158,15 +161,15 @@
                 });
 
                 // Form Image preview
-                $(document).on('change','#image', function (e) {
+                $(document).on('change', '#image', function(e) {
                     e.preventDefault();
 
                     const file = this.files[0];
 
-                    if(file){
+                    if (file) {
                         let reader = new FileReader();
-                        reader.onload = function(e){
-                            $('.preview_image').attr('src',e.target.result);
+                        reader.onload = function(e) {
+                            $('.preview_image').attr('src', e.target.result);
                         }
 
                         reader.readAsDataURL(file);
@@ -309,9 +312,6 @@
                         confirmButtonText: "Yes, delete it!"
                     }).then((result) => {
                         if (result.isConfirmed) {
-
-                            // Show loading indicator
-                            showSpinner();
 
                             $.ajax({
                                 type: "POST",

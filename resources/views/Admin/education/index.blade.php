@@ -252,10 +252,10 @@
                     });
                 });
 
+                //spinner
                 function showSpinner() {
                     $('#spinner-overlay').show();
                 }
-
                 function hideSpinner() {
                     $('#spinner-overlay').hide();
                 }

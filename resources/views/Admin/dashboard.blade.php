@@ -97,18 +97,13 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between">
                             <h3>Visitors Info</h3>
-                            <a href="{{ route('emptyVisitors') }}" class="btn btn-danger"
-                                onclick="return confirm('Are you sure?All visitors data willbe Deleted.')">Empty Table</a>
+                            @if ($visitors->count() > 0)
+                                <a id="emptyTableBtn" href="{{ route('emptyVisitors') }}" class="btn btn-danger">Empty
+                                    Table</a>
+                            @endif
                         </div>
                     </div>
                     <div class="card-body">
-                        @if (session('msg'))
-                            <div class="alert alert-{{ session('cls') }} alert-dismissible fade show" role="alert">
-                                {{ session('msg') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
-                            </div>
-                        @endif
                         <table id="DataTbl" class="table table-striped">
                             <thead>
                                 <tr>
@@ -174,6 +169,68 @@
                     "autoWidth": true,
                     "responsive": true
                 });
+
+                $(document).off('click', '#emptyTableBtn').on('click', '#emptyTableBtn', function(e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, empty it!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+
+                            // Redirect to the route
+                            url = $(this).attr('href');
+
+                            $.ajax({
+                                type: "GET",
+                                url: url,
+                                success: function(response) {
+
+                                    if (response.status == 200) {
+                                        // Success response, show success message
+                                        Swal.fire({
+                                            position: 'center',
+                                            icon: response.cls,
+                                            toast: false,
+                                            title: response.msg,
+                                            showConfirmButton: true,
+                                            timerProgressBar: true,
+                                            showCloseButton: true
+                                        });
+
+                                        // Clear the DataTable (or reload it)
+                                        $('#DataTbl').DataTable().clear().draw();
+
+                                    } else if (response.status == 400) {
+                                        // No data found, show an error message
+                                        Swal.fire({
+                                            position: 'center',
+                                            icon: response.cls,
+                                            toast: false,
+                                            title: response.msg,
+                                            showConfirmButton: true,
+                                            timerProgressBar: true,
+                                            showCloseButton: true
+                                        });
+
+                                        // Also clear the DataTable in case it's already populated
+                                        $('#DataTbl').DataTable().clear().draw();
+                                    }
+
+
+                                }
+                            });
+
+                        }
+                    });
+                });
+
             });
         </script>
     @endpush
