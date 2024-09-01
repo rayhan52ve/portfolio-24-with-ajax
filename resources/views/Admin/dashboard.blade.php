@@ -156,6 +156,32 @@
             </div>
         </div>
     </div>
+
+    <div id="spinner-overlay" style="display: none;">
+        <div class="loadingio-spinner">
+            <!-- Load the external SVG from assets -->
+            <img src="{{ asset('loading/Interwind@1x-1.0s-200px-200px.svg') }}" alt="Loading Spinner" width="200"
+                height="200">
+        </div>
+    </div>
+
+    @push('css')
+        <style>
+            #spinner-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.497);
+                /* Darker semi-transparent background */
+                z-index: 9999;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        </style>
+    @endpush
     @push('js')
         <script>
             $(document).ready(function() {
@@ -190,6 +216,9 @@
                             $.ajax({
                                 type: "GET",
                                 url: url,
+                                beforeSend: function() {
+                                    $('#spinner-overlay').show();
+                                },
                                 success: function(response) {
 
                                     if (response.status == 200) {
@@ -198,10 +227,12 @@
                                             position: 'center',
                                             icon: response.cls,
                                             toast: false,
-                                            title: response.msg,
+                                            title: 'Info',
+                                            text: response.msg,
                                             showConfirmButton: true,
                                             timerProgressBar: true,
-                                            showCloseButton: true
+                                            timer: 50000,
+                                            showCloseButton: false
                                         });
 
                                         // Clear the DataTable (or reload it)
@@ -213,10 +244,12 @@
                                             position: 'center',
                                             icon: response.cls,
                                             toast: false,
-                                            title: response.msg,
+                                            title: 'Table Empty',
+                                            text: response.msg,
                                             showConfirmButton: true,
                                             timerProgressBar: true,
-                                            showCloseButton: true
+                                            timer: 50000,
+                                            showCloseButton: false
                                         });
 
                                         // Also clear the DataTable in case it's already populated
@@ -224,6 +257,8 @@
                                     }
 
 
+                                },complete: function(){
+                                    $('#spinner-overlay').hide();
                                 }
                             });
 

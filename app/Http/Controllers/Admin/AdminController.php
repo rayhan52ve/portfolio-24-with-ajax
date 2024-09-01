@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
-
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -167,29 +167,41 @@ class AdminController extends Controller
 
     public function updatePassword(Request $request)
     {
-        $request->validate([
-            'current_password' => 'required|string',
-            'password' => 'required|string|min:4|confirmed',
-        ], [
-            'password.confirmed' => 'The password confirmation does not match.',
-        ]);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'current_password' => 'required|string',
+                'new_password' => 'required|string|min:4|confirmed',
+            ],
+        );
 
-        $currentPasswordStatus = Hash::check($request->current_password, Auth::user()->password);
-
-        if ($currentPasswordStatus) {
-            $user = User::find(Auth::id());
-            $user->password = Hash::make($request->password);
-            $user->save();
-
-            session()->flash('message', 'Password updated successfully.');
-            session()->flash('cls', 'success');
-        } else {
-            session()->flash('message', 'Old password does not match current password.');
-            session()->flash('cls', 'danger');
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => '400',
+                'msg' => $validator->messages()->first(),
+                'cls' => 'error',
+            ]);
         }
 
-        return redirect()->route('changePassword');
+        if (Hash::check($request->current_password, Auth::user()->password)) {
+            $user = User::find(Auth::id());
+            $user->password = Hash::make($request->new_password);  // Fix this line
+            $user->save();
+
+            return response()->json([
+                'status' => '200',
+                'msg' => 'Password updated successfully.',
+                'cls' => 'success',
+            ]);
+        } else {
+            return response()->json([
+                'status' => '400',
+                'msg' => 'Old password does not match current password.',
+                'cls' => 'error',
+            ]);
+        }
     }
+
 
 
     public function contactUS(Request $request)

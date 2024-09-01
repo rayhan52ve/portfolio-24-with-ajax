@@ -22,8 +22,8 @@
                                         Choose Photo
                                     </label>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" role="switch"
-                                            id="imageCrop" name="image_crop" disabled>
+                                        <input class="form-check-input" type="checkbox" role="switch" id="imageCrop"
+                                            name="image_crop" disabled>
                                         <label class="form-check-label" for="imageCrop">Image Crop</label>
                                     </div>
                                 </div>
@@ -213,7 +213,7 @@
                                 processData: false,
                                 contentType: false,
                                 beforeSend: function() {
-                                    showSpinner();
+                                    $('#spinner-overlay').show();
                                 },
                                 success: function(response) {
                                     if (response.status == '200') {
@@ -247,7 +247,7 @@
                                     }
                                 },
                                 complete: function() {
-                                    hideSpinner();
+                                    $('#spinner-overlay').hide();
                                 },
                                 error: function(xhr, status, error) {
                                     console.error("Error occurred:", error);
@@ -256,22 +256,13 @@
                         }
                     });
 
-                    // Spinner functions
-                    function showSpinner() {
-                        $('#spinner-overlay').show();
-                    }
-
-                    function hideSpinner() {
-                        $('#spinner-overlay').hide();
-                    }
-
                     // Reinitialize image preview
                     function reinitializeImagePreview() {
                         var imageInput = document.getElementById("imageInput");
                         var profileImage = document.getElementById("profileImage");
 
                         imageInput.addEventListener("change", function() {
-                            $('#imageCrop').prop('disabled',false);
+                            $('#imageCrop').prop('disabled', false);
                             if (imageInput.files && imageInput.files[0]) {
                                 var reader = new FileReader();
 
