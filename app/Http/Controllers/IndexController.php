@@ -73,7 +73,7 @@ class IndexController extends Controller
     {
 
         // Get IP address
-        $ipAddress = $request->ip();   
+        $ipAddress = $request->ip();
 
         $visitedBefore = Visitor::where('ip_address', $ipAddress)->first();
 
@@ -97,7 +97,7 @@ class IndexController extends Controller
     public function portfolio(Request $request)
     {
         // Get IP address
-        $ipAddress = $request->ip();   
+        $ipAddress = $request->ip();
 
         $visitedBefore = Visitor::where('ip_address', $ipAddress)->first();
 
@@ -116,7 +116,7 @@ class IndexController extends Controller
     public function contact(Request $request)
     {
         // Get IP address
-        $ipAddress = $request->ip();   
+        $ipAddress = $request->ip();
 
         $visitedBefore = Visitor::where('ip_address', $ipAddress)->first();
 
@@ -133,19 +133,24 @@ class IndexController extends Controller
         return view('Frontend.contact', compact('user', 'portfolio'));
     }
 
-    public function switchStyle($color)
+    public function switchStyle(Request $request)
     {
         $webInfo = WebInfo::first();
 
         if ($webInfo) {
             $webInfo->update([
-                'front_color' => $color,
+                'front_color' => $request->color,
             ]);
         } else {
             WebInfo::create([
-                'front_color' => $color,
+                'front_color' => $request->color,
             ]);
         }
-        return back();
+
+        return response()->json([
+            'status' => '200',
+            'msg' => 'Colour Updated By Ajax.',
+            'cls' => 'success',
+        ]);
     }
 }

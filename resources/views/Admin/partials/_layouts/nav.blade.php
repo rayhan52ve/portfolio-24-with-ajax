@@ -1,7 +1,7 @@
 <div class="nav-content d-flex">
     <!-- User Menu Start -->
     <div id="myProfileImage" class="user-container d-flex">
-        <a href="#" class="d-flex user ">
+        <a href="{{ route('profile') }}" class="d-flex user ">
             @if (auth()->user()->image)
                 <img class="profile" alt="profile" src="{{ asset(auth()->user()->image) }}" />
             @else

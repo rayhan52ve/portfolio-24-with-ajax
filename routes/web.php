@@ -12,7 +12,7 @@ Route::namespace('App\Http\Controllers')->group(function () {
     Route::get('/about', 'IndexController@about')->name('about');
     Route::get('/portfolio', 'IndexController@portfolio')->name('portfolio');
     Route::get('/contact', 'IndexController@contact')->name('contact');
-    Route::get('/switch-style{color}', 'IndexController@switchStyle')->name('switchStyle');
+    Route::post('/switch-style', 'IndexController@switchStyle')->name('switchStyle');
 });
 
 Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->group(function () {

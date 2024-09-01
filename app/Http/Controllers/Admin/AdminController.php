@@ -22,8 +22,45 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
+        // Retrieve all visitors
         $visitors = Visitor::latest()->get();
-        return view('Admin.dashboard', compact('visitors'));
+
+        // Define date ranges and formats
+        $thisMonthName = Carbon::now()->format('F');
+        $thisMonth = Carbon::now()->month;
+        $thisYear = Carbon::now()->year;
+        $today = Carbon::now()->toDateString();
+
+        // Calculate statistics
+        $totalVisitors = $visitors->count();
+
+        $yearlyVisitors = $visitors->filter(function ($visitor) use ($thisYear) {
+            return $visitor->created_at->year == $thisYear;
+        })->count();
+
+        $monthlyVisitors = $visitors->filter(function ($visitor) use ($thisMonth) {
+            return $visitor->created_at->month == $thisMonth;
+        })->count();
+
+        $dailyVisitors = $visitors->filter(function ($visitor) use ($today) {
+            return $visitor->created_at->toDateString() == $today;
+        })->count();
+
+        $computerVisits = $visitors->where('device', 'Computer')->count();
+        $mobileVisits = $visitors->where('device', 'Mobile')->count();
+
+        // Pass data to the view
+        return view('Admin.dashboard', compact(
+            'visitors',
+            'totalVisitors',
+            'yearlyVisitors',
+            'monthlyVisitors',
+            'dailyVisitors',
+            'computerVisits',
+            'mobileVisits',
+            'thisMonthName',
+            'thisYear'
+        ));
     }
 
     public function support()

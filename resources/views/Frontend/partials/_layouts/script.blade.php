@@ -12,6 +12,6 @@
 <script src="{{asset('frontend/js/bootstrap.js')}}"></script>
 <script src="{{asset('frontend/js/custom.js')}}"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-@yield('js')
-
+@stack('js')

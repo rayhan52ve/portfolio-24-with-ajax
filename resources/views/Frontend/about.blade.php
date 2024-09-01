@@ -26,8 +26,8 @@
                                 <h3 class="text-uppercase custom-title mb-0 ft-wt-600">personal infos</h3>
                             </div>
                             <div class="col-12 d-block d-sm-none">
-                                <img src="{{ @$users->image ? asset($users->image) : asset('frontend/img/img-mobile.jpg') }}" class="img-fluid main-img-mobile"
-                                    alt="my picture" />
+                                <img src="{{ @$users->image ? asset($users->image) : asset('frontend/img/img-mobile.jpg') }}"
+                                    class="img-fluid main-img-mobile" alt="my picture" />
                             </div>
                             <div class="col-6">
                                 <ul class="about-list list-unstyled open-sans-font">
@@ -37,11 +37,18 @@
                                     <li> <span class="title">Age :</span> <span
                                             class="value d-block d-sm-inline-block d-lg-block d-xl-inline-block">{{ $users ? $users->age : 'n/a' }}
                                             Years</span> </li>
-                                    <li> <span class="title">Nationality :</span> <span
-                                            class="value d-block d-sm-inline-block d-lg-block d-xl-inline-block">{{ $users ? $users->nationality : 'n/a' }}</span>
+                                    <li> <span class="title">LinkedIn :</span> <span
+                                            class="value d-block d-sm-inline-block d-lg-block d-xl-inline-block"><a
+                                                target="__blanck"
+                                                href="{{ @$users->linkedin ? $users->linkedin : '#' }}">{{ @$users->linkedin ? 'Sajid Rayhan' : 'n/a' }}</a></span>
                                     </li>
-                                    <li> <span class="title">Freelance :</span> <span
-                                            class="value d-block d-sm-inline-block d-lg-block d-xl-inline-block">{{ $users ? $users->freelance : 'n/a' }}</span>
+                                    <li> <span class="title">Git Hub :</span> <span
+                                            class="value d-block d-sm-inline-block d-lg-block d-xl-inline-block">
+                                            <a target="__blanck"
+                                                href="{{ @$users->nationality ? $users->nationality : '#' }}">{{ @$users->nationality ? 'rayhan52ve' : 'n/a' }}</a></span>
+                                    </li>
+                                    <li> <span class="title">Occupation :</span> <span
+                                            class="value d-block d-sm-inline-block d-lg-block d-xl-inline-block">{{ $users ? $users->designation : 'n/a' }}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -56,18 +63,20 @@
                                     <li> <span class="title">Email :</span> <span
                                             class="value d-block d-sm-inline-block d-lg-block d-xl-inline-block">{{ $users ? $users->email : 'n/a' }}</span>
                                     </li>
-                                    <li> <span class="title">LinkedIn :</span> <span
-                                            class="value d-block d-sm-inline-block d-lg-block d-xl-inline-block"><a
-                                                target="__blanck" href="{{ @$users->linkedin ? $users->linkedin : '#' }}">{{ @$users->linkedin ? 'Sajid Rayhan' : 'n/a' }}</a></span>
-                                    </li>
+
                                     <li> <span class="title">langages :</span> <span
                                             class="value d-block d-sm-inline-block d-lg-block d-xl-inline-block">{{ $users ? $users->languages : 'n/a' }}</span>
+                                    </li>
+
+                                    <li> <span class="title">Freelance :</span> <span
+                                            class="value d-block d-sm-inline-block d-lg-block d-xl-inline-block">{{ $users ? $users->freelance : 'n/a' }}</span>
                                     </li>
                                 </ul>
                             </div>
                             <div class="col-12 mt-3">
                                 <a class="button" href="{{ @$users->cv ? $users->cv : 'n/a' }}" target="_blanck">
-                                    <span class="button-text">{{ @$users->cv ? 'Download CV' : 'No CV Uploaded Yet' }}</span>
+                                    <span
+                                        class="button-text">{{ @$users->cv ? 'Download CV' : 'No CV Uploaded Yet' }}</span>
                                     <span class="button-icon fa fa-download"></span>
                                 </a>
                             </div>
@@ -81,14 +90,15 @@
                                 <div class="box-stats with-margin">
                                     <h3 class="poppins-font position-relative">{{ $users ? $users->experience : 0 }}</h3>
                                     <p class="open-sans-font m-0 position-relative text-uppercase">
-                                            years of
+                                        years of
                                         <span class="d-block">experience</span>
                                     </p>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="box-stats with-margin">
-                                    <h3 class="poppins-font position-relative">{{ $users ? $users->complete_project : 0 }}</h3>
+                                    <h3 class="poppins-font position-relative">{{ $users ? $users->complete_project : 0 }}
+                                    </h3>
                                     <p class="open-sans-font m-0 position-relative text-uppercase">completed <span
                                             class="d-block">projects</span></p>
                                 </div>
@@ -111,7 +121,7 @@
                 </div>
                 <hr class="separator">
                 <!-- Skills Starts -->
-                @if ($skills->count() >0)
+                @if ($skills->count() > 0)
                     <div class="row">
                         <div class="col-12">
                             <h3

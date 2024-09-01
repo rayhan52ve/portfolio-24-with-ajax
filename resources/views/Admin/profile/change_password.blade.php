@@ -17,7 +17,9 @@
                                 <b>Change Password</b>
                             </h3>
                             <!-- Empty placeholder to balance the flex -->
-                            <span style="visibility: hidden;" class="btn btn-sm btn-warning"></span>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="togglePassword">
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
                         </div>
                         <hr>
 
@@ -100,6 +102,29 @@
     @push('js')
         <script>
             $(document).ready(function() {
+
+                // password hide unhide
+                $('#togglePassword').on('click', function() {
+                    console.log('clicked');
+
+                    const currentPassInput = $('#current_password');
+                    const newPassInput = $('#new_password');
+                    const confirmPassInput = $('#new_password_confirmation');
+                    const icon = $(this).find('i');
+
+                    if (currentPassInput.attr('type') === 'password') {
+                        currentPassInput.attr('type', 'text');
+                        newPassInput.attr('type', 'text');
+                        confirmPassInput.attr('type', 'text');
+                        icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                    } else {
+                        currentPassInput.attr('type', 'password');
+                        newPassInput.attr('type', 'password');
+                        confirmPassInput.attr('type', 'password');
+                        icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                    }
+                });
+
                 $(document).on('submit', '#updatePasswordForm', function(e) {
                     e.preventDefault();
 
