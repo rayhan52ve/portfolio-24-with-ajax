@@ -51,15 +51,15 @@
 <style>
     /* SweetAlert 3D Error Styling */
     .custom-popup {
-        background: linear-gradient(145deg, #d8f0d0, #e0ffe0) !important;
+        background: linear-gradient(145deg, #8562af, #9d9eb5) !important;
         /* box-shadow: 2px 2px 5px #639f63, -1px -1px 2px #b56a6a !important; */
-        color: #22a224 !important;
+        color: #7322a2 !important;
         border-radius: 15px !important;
     }
 
     .custom-title {
-        color: #1fdc11;
-        text-shadow: 1px 1px 3px #377137;
+        color: #14dc11;
+        text-shadow: 1px 1px 3px #37713c;
     }
 </style>
 <script>
