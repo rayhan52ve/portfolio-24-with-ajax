@@ -19,8 +19,8 @@
                                     {{ $total }} entries</span>
                             </div>
                             <div>
-                                <a title="Create" href="{{ route('educations.create') }}" id="bootModalShow"
-                                    class="btn btn-success">Add
+                                <a title="Create" href="{{ route('educations.create') }}"
+                                    class="bootModalShow btn btn-success">Add
                                     New</a>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                                         <th scope="col">Institute</th>
                                         <th scope="col">Year</th>
                                         <th scope="col">Description</th>
-                                        <th scope="col" class="w-25 p-3">Action</th>
+                                        <th scope="col">Action</th>
 
                                     </tr>
                                 </thead>
@@ -43,7 +43,7 @@
                                     @php
                                         $sl = $educations->firstItem();
                                     @endphp
-                                    @foreach ($educations as $edu)
+                                    @forelse ($educations as $edu)
                                         <tr>
                                             <th scope="row">{{ $sl++ }}</th>
                                             <td>{{ $edu->title }}</td>
@@ -51,9 +51,8 @@
                                             <td>{{ $edu->time }}</td>
                                             <td>{{ $edu->description }}</td>
                                             <td>
-                                                <a title="Edit" id="bootModalShow"
-                                                    href="{{ route('educations.edit', $edu) }}"
-                                                    class="btn btn-warning btn-sm"><i
+                                                <a title="Edit" href="{{ route('educations.edit', $edu) }}"
+                                                    class="bootModalShow btn btn-warning btn-sm"><i
                                                         class="fa-regular fa-pen-to-square"></i></a>
                                                 <form id="{{ 'deleteForm_' . $edu->id }}" title="Delete"
                                                     action="{{ route('educations.destroy', $edu) }}" method="post">
@@ -66,7 +65,11 @@
                                             </td>
 
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center">No Data Found</td>
+                                        </tr>
+                                    @endforelse
 
                                 </tbody>
                             </table>
@@ -80,7 +83,7 @@
         </div>
     </div>
 
-    <div id="spinner-overlay" style="display: none;">
+    <div id="spinner" style="display: none;">
         <div class="loadingio-spinner">
             <!-- Load the external SVG from assets -->
             <img src="{{ asset('loading/Interwind@1x-1.0s-200px-200px.svg') }}" alt="Loading Spinner" width="200"
@@ -90,7 +93,7 @@
 
     @push('css')
         <style>
-            #spinner-overlay {
+            #spinner {
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -112,7 +115,7 @@
                 let dialog = '';
 
                 // Show modal on button click
-                $(document).off('click', '#bootModalShow').on('click', '#bootModalShow', function(e) {
+                $(document).off('click', '.bootModalShow').on('click', '.bootModalShow', function(e) {
                     e.preventDefault();
 
 
@@ -124,7 +127,7 @@
                         type: "GET",
                         url: modalContentUrl,
                         beforeSend: function() {
-                            showSpinner(); // Show the spinner before the request starts
+                            $('#spinner').show();
                         },
                         success: function(response) {
                             dialog = bootbox.dialog({
@@ -137,13 +140,13 @@
                             $('.modalContent').html(response);
                         },
                         complete: function() {
-                            hideSpinner(); // Hide the spinner when the request completes
+                            $('#spinner').hide();
                         }
                     });
                 });
 
                 // Store or Update data on form submission
-                $(document).off('submit', '#storeAndUpdateForm').on('submit', '#storeAndUpdateForm', function(e) {
+                $(document).off('submit', '.storeAndUpdateForm').on('submit', '.storeAndUpdateForm', function(e) {
                     e.preventDefault();
 
                     let formData = new FormData(this);
@@ -156,7 +159,7 @@
                         processData: false,
                         contentType: false,
                         beforeSend: function() {
-                            showSpinner(); // Show the spinner before the request starts
+                            $('#spinner').show();
                         },
                         success: function(response) {
                             if (response.status == 400) {
@@ -185,7 +188,7 @@
                             }
                         },
                         complete: function() {
-                            hideSpinner(); // Hide the spinner when the request completes
+                            $('#spinner').hide();
                         }
                     });
                 });
@@ -210,16 +213,10 @@
 
 
                             $.ajax({
-                                type: "POST", // POST since Laravel uses _method for DELETE
+                                type: "DELETE", // POST since Laravel uses _method for DELETE
                                 url: formAction,
-                                data: {
-                                    _method: 'DELETE',
-                                    _token: $('meta[name="csrf-token"]').attr(
-                                        'content') // Include CSRF token
-                                },
                                 beforeSend: function() {
-                                    showSpinner
-                                        (); // Show the spinner before the request starts
+                                    $('#spinner').show();
                                 },
                                 success: function(response) {
                                     if (response.status === '200') {
@@ -245,20 +242,12 @@
                                     }
                                 },
                                 complete: function() {
-                                    hideSpinner();
+                                    $('#spinner').hide();
                                 }
                             });
                         }
                     });
                 });
-
-                //spinner
-                function showSpinner() {
-                    $('#spinner-overlay').show();
-                }
-                function hideSpinner() {
-                    $('#spinner-overlay').hide();
-                }
 
             });
         </script>

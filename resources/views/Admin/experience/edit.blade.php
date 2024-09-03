@@ -1,4 +1,4 @@
-<form id="storeAndUpdateForm" action="{{ route('experiences.update', $experience->id) }}" method="post">
+<form class="storeAndUpdateForm" action="{{ route('experiences.update', $experience->id) }}" method="post">
     @method('PUT')
     @csrf
     <div class="form-group">

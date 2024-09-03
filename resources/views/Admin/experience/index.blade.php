@@ -19,8 +19,8 @@
                                     {{ $total }} entries</span>
                             </div>
                             <div>
-                                <a title="Create" href="{{ route('experiences.create') }}" id="bootModalShow"
-                                    class="btn btn-success">Add
+                                <a title="Create" href="{{ route('experiences.create') }}"
+                                    class="bootModalShow btn btn-success">Add
                                     New</a>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                                         <th scope="col">Institute</th>
                                         <th scope="col">Years of Experience</th>
                                         <th scope="col">Description</th>
-                                        <th scope="col" class="w-25 p-3">Action</th>
+                                        <th scope="col">Action</th>
 
                                     </tr>
                                 </thead>
@@ -43,7 +43,8 @@
                                     @php
                                         $sl = 1;
                                     @endphp
-                                    @foreach ($experiences as $exp)
+
+                                    @forelse ($experiences as $exp)
                                         <tr>
                                             <th scope="row">{{ $sl++ }}</th>
                                             <td>{{ $exp->title }}</td>
@@ -51,8 +52,8 @@
                                             <td>{{ $exp->time }}</td>
                                             <td>{{ $exp->description }}</td>
                                             <td>
-                                                <a id="bootModalShow" href="{{ route('experiences.edit', $exp) }}"
-                                                    class="btn btn-warning btn-sm"><i
+                                                <a href="{{ route('experiences.edit', $exp) }}"
+                                                    class="bootModalShow btn btn-warning btn-sm"><i
                                                         class="fa-regular fa-pen-to-square"></i></a>
                                                 <form id="{{ 'deleteForm_' . $exp->id }}" title="Delete"
                                                     action="{{ route('experiences.destroy', $exp) }}" method="post">
@@ -66,7 +67,11 @@
                                             </td>
 
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center">No Data Found</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-center">
@@ -79,7 +84,7 @@
         </div>
     </div>
 
-    <div id="spinner-overlay" style="display: none;">
+    <div id="spinner" style="display: none;">
         <div class="loadingio-spinner">
             <!-- Load the external SVG from assets -->
             <img src="{{ asset('loading/Interwind@1x-1.0s-200px-200px.svg') }}" alt="Loading Spinner" width="200"
@@ -89,7 +94,7 @@
 
     @push('css')
         <style>
-            #spinner-overlay {
+            #spinner {
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -111,7 +116,7 @@
                 // Show Modal on Click
                 let dialog = '';
 
-                $(document).off('click', '#bootModalShow').on('click', '#bootModalShow', function(e) {
+                $(document).off('click', '.bootModalShow').on('click', '.bootModalShow', function(e) {
                     e.preventDefault();
 
                     let modalContentUrl = $(this).attr('href');
@@ -122,7 +127,7 @@
                         type: "GET",
                         url: modalContentUrl,
                         beforeSend: function() {
-                            showSpinner(); // Show the spinner before the request starts
+                            $('#spinner').show();
                         },
                         success: function(response) {
                             dialog = bootbox.dialog({
@@ -135,13 +140,13 @@
                             $('.modalContent').html(response);
                         },
                         complete: function() {
-                            hideSpinner(); // Hide the spinner when the request completes
+                            $('#spinner').hide(); // Hide the spinner when the request completes
                         }
                     });
                 });
 
                 // Store or Update On form Submission
-                $(document).off('submit', '#storeAndUpdateForm').on('submit', '#storeAndUpdateForm', function(e) {
+                $(document).off('submit', '.storeAndUpdateForm').on('submit', '.storeAndUpdateForm', function(e) {
                     e.preventDefault();
 
                     let formData = new FormData(this);
@@ -154,7 +159,7 @@
                         processData: false, // Required for FormData
                         contentType: false, // Required for FormData
                         beforeSend: function() {
-                            showSpinner(); // Show the spinner before the request starts
+                            $('#spinner').show();
                         },
                         success: function(response) {
                             if (response.status == 400) {
@@ -183,7 +188,7 @@
                             }
                         },
                         complete: function() {
-                            hideSpinner(); // Hide the spinner when the request completes
+                            $('#spinner').hide(); // Hide the spinner when the request completes
                         }
                     });
                 });
@@ -206,15 +211,10 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $.ajax({
-                                type: "POST",
+                                type: "DELETE",
                                 url: formAction,
-                                data: {
-                                    _method: 'DELETE',
-                                    _token: $('meta[name="csrf-token"]').attr('content')
-                                },
                                 beforeSend: function() {
-                                    showSpinner
-                                        (); // Show the spinner before the request starts
+                                    $('#spinner').show();
                                 },
                                 success: function(response) {
                                     if (response.status == '200') {
@@ -235,20 +235,13 @@
                                     }
                                 },
                                 complete: function() {
-                                    hideSpinner();
+                                    $('#spinner').hide();
                                 }
                             });
                         }
                     });
                 });
 
-                function showSpinner() {
-                    $('#spinner-overlay').show();
-                }
-
-                function hideSpinner() {
-                    $('#spinner-overlay').hide();
-                }
 
             });
         </script>

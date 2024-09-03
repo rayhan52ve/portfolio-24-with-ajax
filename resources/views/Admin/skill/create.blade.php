@@ -1,4 +1,4 @@
-<form id="storeAndUpdateForm" action="{{ route('skils.store') }}" method="post">
+<form class="storeAndUpdateForm" action="{{ route('skils.store') }}" method="post">
     @csrf
     <div class="form-group">
         <label for="program">Program</label>

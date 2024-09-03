@@ -99,7 +99,7 @@
                 <a href="{{ route('experiences.index') }}"
                     class="{{ url()->current() == route('experiences.index') ? 'active' : '' }}">
                     <i data-acorn-icon="office" class="icon" data-acorn-size="18"></i>
-                    <span class="label">Experians</span>
+                    <span class="label">Experiences</span>
                 </a>
             </li>
             <li>

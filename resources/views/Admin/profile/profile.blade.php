@@ -117,7 +117,7 @@
         </div>
     </div>
 
-    <div id="spinner-overlay" style="display: none;">
+    <div id="spinner" style="display: none;">
         <div class="loadingio-spinner">
             <!-- Load the external SVG from assets -->
             <img src="{{ asset('loading/Interwind@1x-1.0s-200px-200px.svg') }}" alt="Loading Spinner" width="200"
@@ -157,7 +157,7 @@
                 width: 1px;
             }
 
-            #spinner-overlay {
+            #spinner {
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -213,7 +213,7 @@
                                 processData: false,
                                 contentType: false,
                                 beforeSend: function() {
-                                    $('#spinner-overlay').show();
+                                    $('#spinner').show();
                                 },
                                 success: function(response) {
                                     if (response.status == '200') {
@@ -247,7 +247,7 @@
                                     }
                                 },
                                 complete: function() {
-                                    $('#spinner-overlay').hide();
+                                    $('#spinner').hide();
                                 },
                                 error: function(xhr, status, error) {
                                     console.error("Error occurred:", error);

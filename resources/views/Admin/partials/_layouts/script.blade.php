@@ -38,6 +38,18 @@
 
 {{-- Data Table --}}
 {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>    
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<!-- CSRF Token and AJAX Setup -->
+<script>
+    $(document).ready(function() {
+        // Set up AJAX to use CSRF token for all requests
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    });
+</script>
 
 @stack('js')

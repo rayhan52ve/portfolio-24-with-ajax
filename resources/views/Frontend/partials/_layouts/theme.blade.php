@@ -48,7 +48,29 @@
 </div>
 <div id="showSwitcher" class="styleSecondColor"><i class="fa fa-cog fa-spin"></i></div>
 
+<div id="spinner" style="display: none;">
+    <div class="loadingio-spinner">
+        <!-- Load the external SVG from assets -->
+        <img src="{{ asset('loading/Interwind@1x-1.0s-200px-200px.svg') }}" alt="Loading Spinner" width="200"
+            height="200">
+    </div>
+</div>
 <style>
+    /* spinner io */
+    #spinner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* background: rgba(0, 0, 0, 0.497); */
+        /* Darker semi-transparent background */
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
     /* SweetAlert 3D Error Styling */
     .custom-popup {
         background: linear-gradient(145deg, #8562af, #9d9eb5) !important;
@@ -64,17 +86,20 @@
 </style>
 <script>
     function switchColor(color) {
+        setActiveStyleSheet(color);
+
         $.ajax({
             url: "{{ route('switchStyle') }}", // URL of your controller route
             type: "POST",
             data: {
                 color: color,
-                _token: "{{ csrf_token() }}" // Include the CSRF token for security
+                _token: "{{ csrf_token() }}"
+            },
+            beforeSend: function() {
+                $('#spinner').show();
             },
             success: function(response) {
                 if (response.status == '200') {
-                    // Handle success response, e.g., apply the new style dynamically
-                    setActiveStyleSheet(color);
 
                     // Display SweetAlert for success
                     Swal.fire({
@@ -92,6 +117,9 @@
                         }
                     });
                 }
+            },
+            complete: function() {
+                $('#spinner').hide();
             }
         });
     }

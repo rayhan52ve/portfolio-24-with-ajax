@@ -1,4 +1,4 @@
-<form id="storeAndUpdateForm" action="{{ route('skils.update', $skill->id) }}" method="post">
+<form class="storeAndUpdateForm" action="{{ route('skils.update', $skill->id) }}" method="post">
     @method('PUT')
     @csrf
     <div class="form-group">

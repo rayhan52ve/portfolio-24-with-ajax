@@ -1,4 +1,4 @@
-<form id="storeAndUpdateForm" action="{{ route('portfolios.store') }}" method="POST" enctype="multipart/form-data">
+<form class="storeAndUpdateForm" action="{{ route('portfolios.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="form-group">
 
@@ -25,7 +25,7 @@
 
         <!-- Image Input -->
         <label for="image">Image</label>
-        <input type="file" class="form-control" name="image" id="image">
+        <input type="file" class="image form-control" name="image" >
         <img src="" class="preview_image img-thumbnail" width="150" alt="">
 
     </div>

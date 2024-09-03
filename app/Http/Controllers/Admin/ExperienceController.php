@@ -38,7 +38,7 @@ class ExperienceController extends Controller
                 'title' => 'required|min:2|string',
                 'sector' => 'required|string',
                 'description' => 'required|max:500|min:10|string',
-                'time' => 'required|integer',
+                'time' => 'required',
 
             ],
             $message = [
@@ -101,7 +101,7 @@ class ExperienceController extends Controller
                 'title' => 'required|min:2|string',
                 'sector' => 'required|string',
                 'description' => 'required|max:500|min:10|string',
-                'time' => 'required|integer',
+                'time' => 'required',
             ],
 
             $message = [

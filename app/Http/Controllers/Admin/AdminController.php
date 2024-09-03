@@ -23,7 +23,7 @@ class AdminController extends Controller
     public function dashboard()
     {
         // Retrieve all visitors
-        $visitors = Visitor::latest()->get();
+        $visitors = Visitor::orderBy('updated_at', 'desc')->get();
 
         // Define date ranges and formats
         $thisMonthName = Carbon::now()->format('F');
@@ -35,15 +35,15 @@ class AdminController extends Controller
         $totalVisitors = $visitors->count();
 
         $yearlyVisitors = $visitors->filter(function ($visitor) use ($thisYear) {
-            return $visitor->created_at->year == $thisYear;
+            return $visitor->updated_at->year == $thisYear;
         })->count();
 
         $monthlyVisitors = $visitors->filter(function ($visitor) use ($thisMonth) {
-            return $visitor->created_at->month == $thisMonth;
+            return $visitor->updated_at->month == $thisMonth;
         })->count();
 
         $dailyVisitors = $visitors->filter(function ($visitor) use ($today) {
-            return $visitor->created_at->toDateString() == $today;
+            return $visitor->updated_at->toDateString() == $today;
         })->count();
 
         $computerVisits = $visitors->where('device', 'Computer')->count();
@@ -233,7 +233,7 @@ class AdminController extends Controller
         } else {
             return response()->json([
                 'status' => '400',
-                'msg' => 'Old password does not match current password.',
+                'msg' => 'Current password does not match.',
                 'cls' => 'error',
             ]);
         }

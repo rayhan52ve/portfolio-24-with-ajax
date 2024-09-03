@@ -11,8 +11,8 @@
                             <h3>Project List</h3>
 
 
-                            <a title="Create" href="{{ route('portfolios.create') }}" id="bootModalShow"
-                                class="btn btn-success btn-loading">Add
+                            <a title="Create" href="{{ route('portfolios.create') }}"
+                                class="bootModalShow btn btn-success btn-loading">Add
                                 Project</a>
                         </div>
                     </div>
@@ -44,16 +44,15 @@
                                             <td><a href=" {{ $portfolio->preview }}"> {{ $portfolio->preview }}</a></td>
                                             <td>{{ $portfolio->order_by }}</td>
                                             <td>
-                                                <a id="bootModalViewImage" title="{{ $portfolio->title }} Image View"
+                                                <a class="bootModalViewImage" title="{{ $portfolio->title }} Image View"
                                                     href="{{ asset($portfolio->image) }}">
                                                     <img src="{{ asset($portfolio->image) }}" width="75px"
                                                         class="img-thumbnail">
                                                 </a>
                                             </td>
                                             <td>
-                                                <a id="bootModalShow" title="Edit"
-                                                    href="{{ route('portfolios.edit', $portfolio) }}"
-                                                    class="btn btn-warning btn-sm btn-loading"><i
+                                                <a title="Edit" href="{{ route('portfolios.edit', $portfolio) }}"
+                                                    class="bootModalShow btn btn-warning btn-sm btn-loading"><i
                                                         class="fa-regular fa-pen-to-square"></i></a>
 
                                                 <form id="deleteForm_{{ $portfolio->id }}"
@@ -81,7 +80,7 @@
             </div>
         </div>
     </div>
-    <div id="spinner-overlay" style="display: none;">
+    <div id="spinner" style="display: none;">
         <div class="loadingio-spinner">
             <!-- Load the external SVG from assets -->
             <img src="{{ asset('loading/Interwind@1x-1.0s-200px-200px.svg') }}" alt="Loading Spinner" width="200"
@@ -91,7 +90,7 @@
 
     @push('css')
         <style>
-            #spinner-overlay {
+            #spinner {
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -122,31 +121,41 @@
         <script>
             $(document).ready(function() {
 
-                // Datatable
-                initializeDataTable();
-
-                function initializeDataTable() {
-                    $('#DataTbl').DataTable({
-                        "paging": true,
-                        "pageLength": 10,
-                        "lengthMenu": [
-                            [10, 25, 50, 100, -1],
-                            [10, 25, 50, 100, "All"]
-                        ],
-                        "ordering": true,
-                        "searching": true,
-                        "info": true,
-                        "autoWidth": true,
-                        "responsive": true
-                    });
-                }
-
-
                 // Show Modals on Click
                 let dialog = '';
 
+                // Create And Edit Modal
+                $(document).off('click', '.bootModalShow').on('click', '.bootModalShow', function(e) {
+                    e.preventDefault();
+
+                    let modalContentUrl = $(this).attr('href');
+                    let modalTitle = $(this).attr('title');
+
+                    // Ajax call to load modal content
+                    $.ajax({
+                        type: "GET",
+                        url: modalContentUrl,
+                        beforeSend: function() {
+                            $('#spinner').show();
+                        },
+                        success: function(response) {
+                            dialog = bootbox.dialog({
+                                title: `<h4>${modalTitle} Experience Info</h4>`,
+                                message: "<div class='modalContent'></div>",
+                                size: 'medium',
+                            });
+
+                            // Inject response into Modal Content
+                            $('.modalContent').html(response);
+                        },
+                        complete: function() {
+                            $('#spinner').hide();
+                        }
+                    });
+                });
+
                 // Image Show modal
-                $(document).off('click', '#bootModalViewImage').on('click', '#bootModalViewImage', function(e) {
+                $(document).off('click', '.bootModalViewImage').on('click', '.bootModalViewImage', function(e) {
                     e.preventDefault();
 
                     let imageUrl = $(this).attr('href');
@@ -161,7 +170,7 @@
                 });
 
                 // Form Image preview
-                $(document).on('change', '#image', function(e) {
+                $(document).on('change', '.image', function(e) {
                     e.preventDefault();
 
                     const file = this.files[0];
@@ -176,38 +185,9 @@
                     }
                 });
 
-                // Create And Edit Modal
-                $(document).off('click', '#bootModalShow').on('click', '#bootModalShow', function(e) {
-                    e.preventDefault();
-
-                    let modalContentUrl = $(this).attr('href');
-                    let modalTitle = $(this).attr('title');
-
-                    // Ajax call to load modal content
-                    $.ajax({
-                        type: "GET",
-                        url: modalContentUrl,
-                        beforeSend: function() {
-                            showSpinner();
-                        },
-                        success: function(response) {
-                            dialog = bootbox.dialog({
-                                title: `<h4>${modalTitle} Experience Info</h4>`,
-                                message: "<div class='modalContent'></div>",
-                                size: 'medium',
-                            });
-
-                            // Inject response into Modal Content
-                            $('.modalContent').html(response);
-                        },
-                        complete: function() {
-                            hideSpinner();
-                        }
-                    });
-                });
 
                 // Store or Update On form Submission
-                $(document).off('submit', '#storeAndUpdateForm').on('submit', '#storeAndUpdateForm', function(e) {
+                $(document).off('submit', '.storeAndUpdateForm').on('submit', '.storeAndUpdateForm', function(e) {
                     e.preventDefault();
 
                     let formData = new FormData(this);
@@ -220,7 +200,7 @@
                         processData: false, // Required for FormData
                         contentType: false, // Required for FormData
                         beforeSend: function() {
-                            showSpinner();
+                            $('#spinner').show();
                         },
                         success: function(response) {
                             if (response.status == 400) {
@@ -279,7 +259,7 @@
                             }
                         },
                         complete: function() {
-                            hideSpinner();
+                            $('#spinner').hide();
                         }
                     });
                 });
@@ -314,14 +294,13 @@
                         if (result.isConfirmed) {
 
                             $.ajax({
-                                type: "POST",
+                                type: "DELETE",
                                 url: formAction,
-                                data: {
-                                    _method: 'DELETE',
-                                    _token: $('meta[name="csrf-token"]').attr('content')
-                                },
+                                // data: {
+                                //     _method: 'DELETE',
+                                // },
                                 beforeSend: function() {
-                                    showSpinner();
+                                    $('#spinner').show();
                                 },
                                 success: function(response) {
                                     if (response.status == '200') {
@@ -348,20 +327,30 @@
                                     }
                                 },
                                 complete: function() {
-                                    hideSpinner();
+                                    $('#spinner').hide();
                                 }
                             });
                         }
                     });
                 });
 
-                // Loading Function
-                function showSpinner() {
-                    $('#spinner-overlay').show();
-                }
+                // Datatable
+                initializeDataTable();
 
-                function hideSpinner() {
-                    $('#spinner-overlay').hide();
+                function initializeDataTable() {
+                    $('#DataTbl').DataTable({
+                        "paging": true,
+                        "pageLength": 10,
+                        "lengthMenu": [
+                            [10, 25, 50, 100, -1],
+                            [10, 25, 50, 100, "All"]
+                        ],
+                        "ordering": true,
+                        "searching": true,
+                        "info": true,
+                        "autoWidth": true,
+                        "responsive": true
+                    });
                 }
 
             });

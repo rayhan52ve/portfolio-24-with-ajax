@@ -1,4 +1,4 @@
-<form id="storeAndUpdateForm" action="{{ route('experiences.store') }}" method="post">
+<form class="storeAndUpdateForm" action="{{ route('experiences.store') }}" method="post">
     @csrf
     <div class="form-group">
         <label for="title">Experience Type</label>

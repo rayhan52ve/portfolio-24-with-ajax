@@ -61,7 +61,7 @@
         </div>
     </div>
     <!-- Spinner Overlay -->
-    <div id="spinner-overlay" style="display: none;">
+    <div id="spinner" style="display: none;">
         <div class="loadingio-spinner">
             <img src="{{ asset('loading/Interwind@1x-1.0s-200px-200px.svg') }}" alt="Loading Spinner" width="200"
                 height="200">
@@ -71,7 +71,7 @@
     @push('css')
         <style>
             /* Spinner Overlay */
-            #spinner-overlay {
+            #spinner {
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -138,7 +138,7 @@
                         processData: false,
                         contentType: false,
                         beforeSend: function() {
-                            $('#spinner-overlay').show();
+                            $('#spinner').show();
                         },
                         success: function(response) {
 
@@ -181,7 +181,7 @@
                             }
                         },
                         complete: function() {
-                            $('#spinner-overlay').hide();
+                            $('#spinner').hide();
                         }
                     });
                 });

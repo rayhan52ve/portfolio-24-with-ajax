@@ -1,4 +1,4 @@
-<form id="storeAndUpdateForm" action="{{ route('portfolios.update', $portfolio->id) }}" method="post"
+<form class="storeAndUpdateForm" action="{{ route('portfolios.update', $portfolio->id) }}" method="post"
     enctype='multipart/form-data'>
     @method('PUT')
     @csrf
@@ -23,7 +23,7 @@
             placeholder="Enter Serial Order">
 
         <label for="image">Image</label>
-        <input type="file" class="form-control " name="image" id="image">
+        <input type="file" class="image form-control " name="image">
         <img src="{{ asset($portfolio->image) }}" class="preview_image img-thumbnail" width="150">
 
     </div>

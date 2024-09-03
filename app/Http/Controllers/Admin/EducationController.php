@@ -35,9 +35,9 @@ class EducationController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'title' => 'required|max:20|min:2|string',
+                'title' => 'required|string',
                 'sector' => 'required|string',
-                'description' => 'required|max:500|min:10|string',
+                'description' => 'required|max:1000|min:10|string',
                 'time' => 'required',
             ],
             $message = [
@@ -95,9 +95,9 @@ class EducationController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'title' => 'required|max:20|min:2|string',
+                'title' => 'required|min:2|string',
                 'sector' => 'required|string',
-                'description' => 'required|max:500|min:10|string',
+                'description' => 'required|max:1000|min:10|string',
                 'time' => 'required',
             ],
             $message = [

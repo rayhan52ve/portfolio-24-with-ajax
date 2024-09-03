@@ -48,7 +48,7 @@ class ProtfolioController extends Controller
                 'title.required' => 'Please enter project name.',
                 'technology.required' => 'Please enter Technology.Ex:- Laravel,Ajax',
                 'preview.required' => 'Please enter project link as preview.',
-                'order_by.required' => 'Please enter project list order or serial number.',
+                'order_by.required' => 'Please enter project list order or serial number.Ex:-1',
                 'order_by.integer' => 'Please enter project list order or serial number.Ex:-1',
             ]
         );

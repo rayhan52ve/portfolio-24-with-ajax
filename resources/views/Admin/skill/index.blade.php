@@ -19,8 +19,8 @@
                                     {{ $total }} entries</span>
                             </div>
                             <div>
-                                <a id="bootModalShow" title="Create" href="{{ route('skils.create') }}"
-                                    class="btn btn-success">Add
+                                <a title="Create" href="{{ route('skils.create') }}"
+                                    class="bootModalShow btn btn-success">Add
                                     New Skill</a>
                             </div>
                         </div>
@@ -41,14 +41,14 @@
                                     @php
                                         $sl = 1;
                                     @endphp
-                                    @foreach ($skills as $skill)
+                                    @forelse ($skills as $skill)
                                         <tr>
                                             <td>{{ $sl++ }}</td>
                                             <td>{{ $skill->program }}</td>
                                             <td>{{ $skill->percentage }}</td>
                                             <td>
-                                                <a id="bootModalShow" href="{{ route('skils.edit', $skill) }}"
-                                                    class="btn btn-warning btn-sm"><i
+                                                <a href="{{ route('skils.edit', $skill) }}"
+                                                    class="bootModalShow btn btn-warning btn-sm"><i
                                                         class="fa-regular fa-pen-to-square"></i></a>
 
                                                 <form id="deleteForm_{{ $skill->id }}"
@@ -62,7 +62,11 @@
 
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="100%" class="text-center">No Data Found</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-center">
@@ -75,7 +79,7 @@
         </div>
     </div>
 
-    <div id="spinner-overlay" style="display: none;">
+    <div id="spinner" style="display: none;">
         <div class="loadingio-spinner">
             <!-- Load the external SVG from assets -->
             <img src="{{ asset('loading/Interwind@1x-1.0s-200px-200px.svg') }}" alt="Loading Spinner" width="200"
@@ -85,7 +89,7 @@
 
     @push('css')
         <style>
-            #spinner-overlay {
+            #spinner {
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -106,7 +110,7 @@
 
                 // Show Modal on Click
                 let dialog = '';
-                $(document).off('click', '#bootModalShow').on('click', '#bootModalShow', function(e) {
+                $(document).off('click', '.bootModalShow').on('click', '.bootModalShow', function(e) {
                     e.preventDefault();
 
                     let modalCintentUrl = $(this).attr('href');
@@ -117,7 +121,7 @@
                         type: "GET",
                         url: modalCintentUrl,
                         beforeSend: function() {
-                            showSpinner(); // Show the spinner before the request starts
+                            $('#spinner').show();
                         },
                         success: function(response) {
                             dialog = bootbox.dialog({
@@ -130,7 +134,7 @@
 
                         },
                         complete: function() {
-                            hideSpinner(); // Hide the spinner when the request completes
+                            $('#spinner').hide();
                         }
                     });
                 });
@@ -139,9 +143,9 @@
                 $(document).off('click', '.submit').on('click', '.submit', function(e) {
                     e.preventDefault();
 
-                    let formId = document.getElementById('storeAndUpdateForm');
-                    let formData = new FormData(formId);
-                    let formUrl = $('#storeAndUpdateForm').attr('action');
+                    let formClass = document.querySelector('.storeAndUpdateForm');
+                    let formData = new FormData(formClass);
+                    let formUrl = $('.storeAndUpdateForm').attr('action');
 
                     $.ajax({
                         type: "POST",
@@ -150,7 +154,7 @@
                         processData: false,
                         contentType: false,
                         beforeSend: function() {
-                            showSpinner(); // Show the spinner before the request starts
+                            $('#spinner').show();
                         },
                         success: function(response) {
                             if (response.status == 400) {
@@ -178,7 +182,7 @@
                             }
                         },
                         complete: function() {
-                            hideSpinner(); // Hide the spinner when the request completes
+                            $('#spinner').hide();
                         }
                     });
 
@@ -203,15 +207,10 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $.ajax({
-                                type: "POST",
+                                type: "DELETE",
                                 url: formAction,
-                                data: {
-                                    _method: 'DELETE',
-                                    _token: $('meta[name="csrf-token"]').attr('content')
-                                },
                                 beforeSend: function() {
-                                    showSpinner
-                                        (); // Show the spinner before the request starts
+                                    $('#spinner').show();
                                 },
                                 success: function(response) {
                                     $('#table-content').load(location.href +
@@ -228,7 +227,7 @@
                                     });
                                 },
                                 complete: function() {
-                                    hideSpinner();
+                                    $('#spinner').hide();
                                 }
                             });
 
@@ -236,14 +235,6 @@
                     });
 
                 });
-
-                function showSpinner() {
-                    $('#spinner-overlay').show();
-                }
-
-                function hideSpinner() {
-                    $('#spinner-overlay').hide();
-                }
 
             });
         </script>

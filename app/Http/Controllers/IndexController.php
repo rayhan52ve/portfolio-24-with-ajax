@@ -38,9 +38,9 @@ class IndexController extends Controller
         $position = Location::get($ipAddress);
 
         if ($position) {
-            $location = $position->cityName . ', ' . $position->regionName;
+            $location = $position->cityName;
         } else {
-            $location = 'Unknown';
+            $location = 'N/A';
         }
 
         $visitedBefore = Visitor::where('ip_address', $ipAddress)->first();
