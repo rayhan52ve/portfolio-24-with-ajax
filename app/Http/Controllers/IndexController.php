@@ -85,8 +85,8 @@ class IndexController extends Controller
             ]);
         }
 
-        $educations = Education::all();
-        $experiences = Experience::all();
+        $educations = Education::latest()->get();
+        $experiences = Experience::latest()->get();
         $experience = Experience::first();
         $skills = Skill::all();
         $users = User::get()->first();

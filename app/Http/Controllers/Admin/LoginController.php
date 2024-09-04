@@ -22,7 +22,7 @@ class LoginController extends Controller
                     session()->flash('cls','success');
                     return redirect()->route('dashboard');
                 }else{
-                    session()->flash('msg','Invalid Username or Password');
+                    session()->flash('msg','Invalid Email or Password');
                     session()->flash('title','Invalid Credential!');
                     session()->flash('cls','error');
                     return redirect()->route('login');
