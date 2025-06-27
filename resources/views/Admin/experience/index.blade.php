@@ -35,6 +35,7 @@
                                         <th scope="col">Institute</th>
                                         <th scope="col">Years of Experience</th>
                                         <th scope="col">Description</th>
+                                        <th scope="col">Order</th>
                                         <th scope="col">Action</th>
 
                                     </tr>
@@ -51,6 +52,7 @@
                                             <td>{{ $exp->sector }}</td>
                                             <td>{{ $exp->time }}</td>
                                             <td>{{ $exp->description }}</td>
+                                            <td class="text-center">{{ $exp->order_by }}</td>
                                             <td>
                                                 <a href="{{ route('experiences.edit', $exp) }}"
                                                     class="bootModalShow btn btn-warning btn-sm"><i

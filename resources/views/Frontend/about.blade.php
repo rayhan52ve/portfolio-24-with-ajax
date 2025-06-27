@@ -45,7 +45,7 @@
                                     <li> <span class="title">Git Hub :</span> <span
                                             class="value d-block d-sm-inline-block d-lg-block d-xl-inline-block">
                                             <a target="__blanck"
-                                                href="{{ @$users->nationality ? $users->nationality : '#' }}">{{ @$users->nationality ? 'rayhan52ve' : 'n/a' }}</a></span>
+                                                href="{{ @$users->git ? $users->git : '#' }}">{{ @$users->git ? 'rayhan52ve' : 'n/a' }}</a></span>
                                     </li>
                                     <li> <span class="title">Occupation :</span> <span
                                             class="value d-block d-sm-inline-block d-lg-block d-xl-inline-block">{{ $users ? $users->designation : 'n/a' }}</span>

@@ -76,7 +76,7 @@
                                 </div>
                                 <div class="form-group mt-1 col-md-6">
                                     <label for="">GitHub</label>
-                                    <input value="{{ Auth::user()->nationality }}" type="text" class="form-control"
+                                    <input value="{{ Auth::user()->git }}" type="text" class="form-control"
                                         Name="nationality">
                                 </div>
                                 <div class="form-group mt-1 col-md-6">
@@ -248,9 +248,7 @@
                                 },
                                 complete: function() {
                                     $('#spinner').hide();
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error("Error occurred:", error);
+                                
                                 }
                             });
                         }

@@ -85,13 +85,12 @@ class IndexController extends Controller
             ]);
         }
 
-        $educations = Education::latest()->get();
-        $experiences = Experience::latest()->get();
-        $experience = Experience::first();
-        $skills = Skill::all();
+        $educations = Education::orderBy('order_by','asc')->get();
+        $experiences = Experience::orderBy('order_by','asc')->get();
+        $skills = Skill::orderBy('order_by','asc')->get();
         $users = User::get()->first();
         // dd($education);
-        return view('Frontend.about', compact('educations', 'experiences', 'users', 'experience', 'skills'));
+        return view('Frontend.about', compact('educations', 'experiences', 'users', 'skills'));
     }
 
     public function portfolio(Request $request)

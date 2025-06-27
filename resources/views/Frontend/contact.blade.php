@@ -59,13 +59,13 @@
                                         <input type="text" name="name" placeholder="YOUR NAME">
                                     </div>
                                     <div class="col-12 col-md-4">
-                                        <input type="email" name="email" placeholder="YOUR EMAIL">
+                                        <input type="email" name="email" placeholder="YOUR EMAIL" required>
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <input type="text" name="subject" placeholder="YOUR SUBJECT">
                                     </div>
                                     <div class="col-12">
-                                        <textarea name="message" placeholder="YOUR MESSAGE"></textarea>
+                                        <textarea name="message" placeholder="YOUR MESSAGE" required></textarea>
                                         <button type="submit" class="button">
                                             <span class="button-text">Send Message</span>
                                             <span class="button-icon fa fa-send"></span>

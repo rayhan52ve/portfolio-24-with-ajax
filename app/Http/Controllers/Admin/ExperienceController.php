@@ -14,7 +14,7 @@ class ExperienceController extends Controller
      */
     public function index()
     {
-        $experiences = Experience::latest()->paginate(10);
+        $experiences = Experience::orderBy('order_by','asc')->paginate(10);
         return view('Admin.experience.index', compact('experiences'));
     }
 
@@ -62,6 +62,7 @@ class ExperienceController extends Controller
                 $experience->sector = $request->sector;
                 $experience->description = $request->description;
                 $experience->time = $request->time;
+                $experience->order_by = $request->order_by;
                 $experience->save();
             }
 
@@ -126,6 +127,7 @@ class ExperienceController extends Controller
                 $experience->sector = $request->sector;
                 $experience->description = $request->description;
                 $experience->time = $request->time;
+                $experience->order_by = $request->order_by;
                 $experience->update();
             }
 

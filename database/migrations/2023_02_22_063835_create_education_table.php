@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('sector');
             $table->string('description');
             $table->string('time');
+            $table->integer('order_by')->default(1);
             $table->timestamps();
         });
     }

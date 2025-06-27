@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('client')->nullable();
             $table->string('technology')->nullable();
             $table->string('preview')->nullable();
-            $table->integer('order_by')->nullable();
+            $table->integer('order_by')->default(1);
             $table->string('image')->nullable();
             $table->timestamps();
         });

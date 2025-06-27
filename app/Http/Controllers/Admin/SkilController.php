@@ -15,7 +15,7 @@ class SkilController extends Controller
      */
     public function index()
     {
-        $skills = Skill::latest()->paginate(10);
+        $skills = Skill::orderBy('order_by','asc')->paginate(10);
         return view('Admin.skill.index', compact('skills'));
     }
 
@@ -56,6 +56,7 @@ class SkilController extends Controller
                 $skill = new Skill;
                 $skill->program = $data['program'];
                 $skill->percentage = $data['percentage'];
+                $skill->order_by = $data['order_by'];
                 $skill->save();
             }
 
@@ -112,6 +113,7 @@ class SkilController extends Controller
                 $skill = Skill::find($id);
                 $skill->program = $request->program;
                 $skill->percentage = $request->percentage;
+                $skill->order_by = $request->order_by;
                 $skill->update();
             }
 

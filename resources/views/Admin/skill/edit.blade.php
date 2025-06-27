@@ -13,7 +13,10 @@
             value="{{ $skill->percentage }}">
         <div class="percentageError errors d-none text-danger"></div>
 
-
+        <!-- Order By Input -->
+        <label for="order_by">Order By</label>
+        <input type="number" class="form-control" value="{{ $skill->order_by }}" name="order_by"
+            placeholder="Enter Order Serial Number.Ex:-1" id="order_by">
 
         <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>

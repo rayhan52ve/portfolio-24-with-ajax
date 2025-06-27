@@ -10,7 +10,8 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class ContactUS extends Mailable
-{ use Queueable, SerializesModels;
+{
+    use Queueable, SerializesModels;
     public $name;
     public $email;
     public $subject;
@@ -20,7 +21,7 @@ class ContactUS extends Mailable
      *
      * @return void
      */
-    public function __construct($name,$email,$subject,$description)
+    public function __construct($name, $email, $subject, $description)
     {
         $this->name = $name;
         $this->email = $email;
@@ -35,6 +36,8 @@ class ContactUS extends Mailable
      */
     public function build()
     {
-        return $this->to('sdk1080p@gmail.com')->markdown('auth.contact');
+        return $this
+            ->subject('Mail from your Portfolio.') // ✅ Optional but helpful
+            ->markdown('auth.contact'); // ✅ Uses Markdown template
     }
 }

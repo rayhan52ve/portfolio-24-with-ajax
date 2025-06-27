@@ -14,7 +14,7 @@ class EducationController extends Controller
      */
     public function index()
     {
-        $educations = Education::latest()->paginate(10);
+        $educations = Education::orderBy('order_by','asc')->paginate(10);
         return view('Admin.education.index', compact('educations'));
     }
 
@@ -59,6 +59,7 @@ class EducationController extends Controller
                 $education->sector = $request->sector;
                 $education->description = $request->description;
                 $education->time = $request->time;
+                $education->order_by = $request->order_by;
                 $education->save();
 
                 return response()->json([
@@ -119,6 +120,7 @@ class EducationController extends Controller
                 $education->sector = $request->sector;
                 $education->description = $request->description;
                 $education->time = $request->time;
+                $education->order_by = $request->order_by;
                 $education->update();
 
                 return response()->json([

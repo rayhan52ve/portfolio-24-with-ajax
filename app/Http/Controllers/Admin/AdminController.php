@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Protfolio;
 use App\Mail\Websitemail;
 use App\Mail\ContactUS;
+use App\Models\Contact;
 use App\Models\Visitor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -181,7 +182,7 @@ class AdminController extends Controller
             $user->designation = $request->designation;
             $user->address = $request->address;
             $user->age = $request->age;
-            $user->nationality = $request->nationality;
+            $user->git = $request->git;
             $user->freelance = $request->freelance;
             $user->languages = $request->languages;
             $user->experience = $request->experience;
@@ -243,14 +244,22 @@ class AdminController extends Controller
 
     public function contactUS(Request $request)
     {
-        // dd($request->all());
+        $profileEmail = User::first()->email ?? 'sajidrayhan875@gmail.com';
         if ($request->isMethod("post")) {
+            // Contact::create($request->all());
             $name = $request->name;
             $email = $request->email;
             $subject = $request->subject;
             $message = $request->message;
 
-            Mail::to($email)->send(new ContactUS($name, $email, $subject, $message));
+              try {
+                Mail::to($profileEmail)->send(new ContactUS($name, $email, $subject, $message));
+
+                return response()->json('success'); // Return success response to Ajax
+            } catch (\Exception $e) {
+                return response()->json('error'); // Return error response to Ajax
+            }
+            // Mail::to($profileEmail)->send(new ContactUS($name, $email, $subject, $message,$profileEmail));
         }
     }
 

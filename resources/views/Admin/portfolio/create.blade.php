@@ -21,7 +21,7 @@
 
         <!-- Order By Input -->
         <label for="order_by">Order By</label>
-        <input type="number" class="form-control" name="order_by" placeholder="Enter Serial Order" id="order_by">
+        <input type="number" class="form-control" name="order_by" placeholder="Enter Order Serial Number.Ex:-1" id="order_by">
 
         <!-- Image Input -->
         <label for="image">Image</label>

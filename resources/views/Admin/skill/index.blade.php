@@ -27,12 +27,13 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped">
+                            <table class="table table-striped text-center">
                                 <thead>
                                     <tr>
                                         <th>SL</th>
                                         <th>Program</th>
                                         <th>Percentage</th>
+                                        <th>Order</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -46,6 +47,7 @@
                                             <td>{{ $sl++ }}</td>
                                             <td>{{ $skill->program }}</td>
                                             <td>{{ $skill->percentage }}</td>
+                                            <td>{{ $skill->order_by }}</td>
                                             <td>
                                                 <a href="{{ route('skils.edit', $skill) }}"
                                                     class="bootModalShow btn btn-warning btn-sm"><i

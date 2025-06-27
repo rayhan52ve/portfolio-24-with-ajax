@@ -3,7 +3,7 @@
 @section('content')
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-9">
                 <div id="table-content" class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between">
@@ -35,6 +35,7 @@
                                         <th scope="col">Institute</th>
                                         <th scope="col">Year</th>
                                         <th scope="col">Description</th>
+                                        <th scope="col">Order</th>
                                         <th scope="col">Action</th>
 
                                     </tr>
@@ -50,6 +51,7 @@
                                             <td>{{ $edu->sector }}</td>
                                             <td>{{ $edu->time }}</td>
                                             <td>{{ $edu->description }}</td>
+                                            <td class="text-center">{{ $edu->order_by }}</td>
                                             <td>
                                                 <a title="Edit" href="{{ route('educations.edit', $edu) }}"
                                                     class="bootModalShow btn btn-warning btn-sm"><i
