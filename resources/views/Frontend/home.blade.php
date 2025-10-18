@@ -33,7 +33,7 @@
                     <div>
                         <img src="img/img-mobile.jpg" class="img-fluid main-img-mobile d-none d-sm-block d-lg-none"
                             alt="my picture" />
-                        <h1 class="text-uppercase poppins-font">I'm dot
+                        <h1 class="text-uppercase poppins-font">I'm
                             {{ @$user->name }}.<span>{{ @$user->designation }}</span></h1>
                         <p class="open-sans-font">{{ @$user->description }}</p>
                         <a class="button" href="{{ route('about') }}">
