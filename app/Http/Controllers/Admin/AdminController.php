@@ -252,7 +252,7 @@ class AdminController extends Controller
             $subject = $request->subject;
             $message = $request->message;
 
-              try {
+            try {
                 Mail::to($profileEmail)->send(new ContactUS($name, $email, $subject, $message));
 
                 return response()->json('success'); // Return success response to Ajax

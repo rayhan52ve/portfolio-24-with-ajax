@@ -16036,6 +16036,19 @@ html[data-radius=standard] #settings .figure {
   border-bottom-left-radius: var(--border-radius-md) !important;
 }
 
+/* Match dark mode background */
+.table-striped-datatbl tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.table-striped-datatbl tbody tr:nth-of-type(even) {
+    background-color: rgba(255, 255, 255, 0.09);
+}
+
+table.dataTable {
+    border-color: #444;
+}
+
 html[data-show=true] .settings-button {
   opacity: 1;
 }

@@ -31,7 +31,7 @@
                 <div class="col-lg-4 bg position-fixed d-none d-lg-block"></div>
                 <div class="col-12 col-lg-8 offset-lg-4 home-details text-left text-sm-center text-lg-left">
                     <div>
-                        <img src="img/img-mobile.jpg" class="img-fluid main-img-mobile d-none d-sm-block d-lg-none"
+                        <img src="{{ asset($user->image)}}" class="img-fluid main-img-mobile d-none d-sm-block d-lg-none"
                             alt="my picture" />
                         <h1 class="text-uppercase poppins-font">I'm
                             {{ @$user->name }}.<span>{{ @$user->designation }}</span></h1>

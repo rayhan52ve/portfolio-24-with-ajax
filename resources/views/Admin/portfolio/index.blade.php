@@ -1,5 +1,33 @@
 @extends('Admin.partials.master')
+@push('css')
+    <style>
+        #spinner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.497);
+            /* Darker semi-transparent background */
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
+        /* Default placeholder color */
+        input::placeholder {
+            color: #6c757d;
+            /* Default placeholder color, gray */
+        }
+
+        /* Placeholder turns red when input is invalid */
+        input.is-invalid::placeholder {
+            color: red;
+            /* Red color for invalid placeholders */
+        }
+    </style>
+@endpush
 @section('content')
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -18,7 +46,7 @@
                     </div>
                     <div class="card-body">
                         <div id="table-content" class="table-responsive">
-                            <table id="DataTbl" class="table table-striped text-center" style="font-size: 13px">
+                            <table id="DataTbl" class="table table-striped-datatbl text-center" style="font-size: 13px">
                                 <thead>
                                     <tr>
                                         <th scope="col">SL</th>
@@ -88,35 +116,7 @@
         </div>
     </div>
 
-    @push('css')
-        <style>
-            #spinner {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.497);
-                /* Darker semi-transparent background */
-                z-index: 9999;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
 
-            /* Default placeholder color */
-            input::placeholder {
-                color: #6c757d;
-                /* Default placeholder color, gray */
-            }
-
-            /* Placeholder turns red when input is invalid */
-            input.is-invalid::placeholder {
-                color: red;
-                /* Red color for invalid placeholders */
-            }
-        </style>
-    @endpush
     @push('js')
         <script>
             $(document).ready(function() {
