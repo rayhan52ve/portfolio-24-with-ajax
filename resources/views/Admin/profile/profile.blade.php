@@ -77,7 +77,7 @@
                                 <div class="form-group mt-1 col-md-6">
                                     <label for="">GitHub</label>
                                     <input value="{{ Auth::user()->git }}" type="text" class="form-control"
-                                        Name="nationality">
+                                        Name="git">
                                 </div>
                                 <div class="form-group mt-1 col-md-6">
                                     <label for="">LinkedIn</label>

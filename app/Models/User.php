@@ -25,5 +25,6 @@ class User extends Authenticatable
             'linkedin',
             'complete_project',
             'cv',
+            'git',
     ];
 }
